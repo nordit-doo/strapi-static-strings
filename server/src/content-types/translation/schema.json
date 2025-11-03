@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strapi_static_strings_translations",
+  "info": {
+    "name": "Translation",
+    "displayName": "Translation",
+    "singularName": "translation",
+    "pluralName": "translations",
+    "description": "Stores translation keys with their corresponding translations and namespaces"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": true
+    },
+    "content-type-builder": {
+      "visible": true
+    }
+  },
+  "attributes": {
+    "en": {
+      "type": "text"
+    },
+    "key": {
+      "type": "string",
+      "required": true
+    },
+    "translations": {
+      "type": "json",
+      "required": true
+    },
+    "namespace": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::strapi-static-strings.namespace",
+      "inversedBy": "translations"
+    }
+  }
+}

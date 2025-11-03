@@ -1,0 +1,29 @@
+{
+  "collectionName": "strapi_static_strings_projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "description": {
+      "type": "string",
+      "required": false,
+      "unique": false
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "namespaces": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::strapi-static-strings.namespace",
+      "mappedBy": "project"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "collectionName": "strapi_static_strings_namespaces",
+  "info": {
+    "singularName": "namespace",
+    "pluralName": "namespaces",
+    "displayName": "Namespace"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "description": {
+      "type": "string",
+      "required": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::strapi-static-strings.project",
+      "inversedBy": "namespaces"
+    },
+    "translations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::strapi-static-strings.translation",
+      "mappedBy": "namespace"
+    }
+  }
+}
