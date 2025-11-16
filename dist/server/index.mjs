@@ -290,14 +290,13 @@ const cliController = {
     const namespaceRecord = await strapi.db.query(`plugin::${PLUGIN_ID}.namespace`).findOne({ where: { name: namespace2, project: project2.id } });
     if (!namespaceRecord) return ctx.notFound(`Namespace "${namespace2}" not found`);
     const knex = strapi.db.connection;
-    const translationsTable = "i18n_static_translations_translations";
-    const linkTable = "i_18_n_static_translations_translations_namespace_lnk";
-    const exist = await knex(`${translationsTable} as t`).join({ lnk: linkTable }, "lnk.translation_id", "t.id").where("lnk.namespace_id", namespaceRecord.id).andWhere("t.key", translationKey).first();
+    const linkTable = PLUGIN_TRANSLATION_NAMESPACE_LINK_TABLE_NAME;
+    const exist = await knex(`${PLUGIN_TRANSLATION_TABLE_NAME} as t`).join({ lnk: linkTable }, "lnk.translation_id", "t.id").where("lnk.namespace_id", namespaceRecord.id).andWhere("t.key", translationKey).first();
     if (exist) {
-      await knex(translationsTable).where({ id: exist.id }).update({ ...translations, updated_at: /* @__PURE__ */ new Date() });
+      await knex(PLUGIN_TRANSLATION_TABLE_NAME).where({ id: exist.id }).update({ ...translations, updated_at: /* @__PURE__ */ new Date() });
       return ctx.send({ updated: true });
     }
-    const [inserted] = await knex(translationsTable).insert({
+    const [inserted] = await knex(PLUGIN_TRANSLATION_TABLE_NAME).insert({
       key: translationKey,
       ...translations,
       created_at: /* @__PURE__ */ new Date(),

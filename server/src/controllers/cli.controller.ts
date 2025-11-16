@@ -145,18 +145,17 @@ export default {
     if (!namespaceRecord) return ctx.notFound(`Namespace "${namespace}" not found`);
 
     const knex = strapi.db.connection;
-    const translationsTable = 'i18n_static_translations_translations';
-    const linkTable = 'i_18_n_static_translations_translations_namespace_lnk';
+    const linkTable = PLUGIN_TRANSLATION_NAMESPACE_LINK_TABLE_NAME;
 
     // Provjeri postoji li translation s istim key-em u ovom namespaceu
-    const exist = await knex(`${translationsTable} as t`)
+    const exist = await knex(`${PLUGIN_TRANSLATION_TABLE_NAME} as t`)
       .join({ lnk: linkTable }, 'lnk.translation_id', 't.id')
       .where('lnk.namespace_id', namespaceRecord.id)
       .andWhere('t.key', translationKey)
       .first();
 
     if (exist) {
-      await knex(translationsTable)
+      await knex(PLUGIN_TRANSLATION_TABLE_NAME)
         .where({ id: exist.id })
         .update({ ...(translations as Record<string, string>), updated_at: new Date() });
 
@@ -164,7 +163,7 @@ export default {
     }
 
     // Ako ne postoji, kreiraj novi translation i poveži ga s namespaceom
-    const [inserted] = await knex(translationsTable)
+    const [inserted] = await knex(PLUGIN_TRANSLATION_TABLE_NAME)
       .insert({
         key: translationKey,
         ...(translations as Record<string, string>),
