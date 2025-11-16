@@ -6,7 +6,7 @@ const reactRouterDom = require("react-router-dom");
 const designSystem = require("@strapi/design-system");
 const icons = require("@strapi/icons");
 const react = require("react");
-const index = require("./index-Cdd78jys.js");
+const index = require("./index-Cpw83a_v.js");
 function bind(fn, thisArg) {
   return function wrap() {
     return fn.apply(thisArg, arguments);
@@ -3915,23 +3915,34 @@ const Translations = () => {
                 ),
                 isMissing && /* @__PURE__ */ jsxRuntime.jsx(designSystem.Badge, { backgroundColor: "red", style: { padding: "2px 6px" }, children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { fontWeight: "bold", textColor: "white", fontSize: "9px", children: "Missing" }) })
               ] }) }),
-              /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { style: { paddingTop: "10px", paddingBottom: "10px" }, children: locales.map((locale) => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { marginRight: 1, padding: 1, children: [
-                /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { display: "flex", children: /* @__PURE__ */ jsxRuntime.jsxs(
-                  designSystem.Typography,
-                  {
-                    lineHeight: "11px",
-                    fontWeight: "bold",
-                    variant: "pi",
-                    style: { minWidth: "100px" },
-                    children: [
-                      locale.name,
-                      ":",
-                      " "
-                    ]
-                  }
-                ) }),
-                /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { lineHeight: "11px", variant: "pi", children: translation[locale.code] || "-" })
-              ] }, locale.code)) }),
+              /* @__PURE__ */ jsxRuntime.jsx(
+                designSystem.Td,
+                {
+                  style: {
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word"
+                  },
+                  children: locales.map((locale) => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { marginRight: 1, padding: 1, alignItems: "flex-start", children: [
+                    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { display: "flex", children: /* @__PURE__ */ jsxRuntime.jsxs(
+                      designSystem.Typography,
+                      {
+                        lineHeight: "14px",
+                        fontWeight: "bold",
+                        variant: "omega",
+                        style: { minWidth: "100px" },
+                        children: [
+                          locale.name,
+                          ":",
+                          " "
+                        ]
+                      }
+                    ) }),
+                    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { lineHeight: "16px", variant: "omega", children: translation[locale.code] || "-" })
+                  ] }, locale.code))
+                }
+              ),
               /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { style: { width: "120px" }, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "0.5rem", justifyContent: "flex-end", children: [
                 /* @__PURE__ */ jsxRuntime.jsx(
                   designSystem.Button,
@@ -3984,15 +3995,31 @@ const Translations = () => {
     )
   ] });
 };
+const getNamespace = async (id) => {
+  return axios.get(`/${index.PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
+};
 const TranslationsPage = () => {
   const params = reactRouterDom.useParams();
-  const { projectId } = params;
+  const { namespaceId, projectId } = params;
+  const [namespace, setNamespace] = react.useState(null);
+  react.useEffect(() => {
+    const fetchNamespace = async () => {
+      if (namespaceId) {
+        const data = await getNamespace(namespaceId);
+        setNamespace(data);
+      }
+    };
+    fetchNamespace();
+  }, [namespaceId]);
   return /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Main, { padding: "2rem", children: [
     /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Box, { paddingBottom: "1rem", children: [
       /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { paddingBottom: "0.5rem", gap: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "alpha", children: "Static translations" }) }),
       /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Breadcrumbs, { label: "Folder navigatation", children: [
         /* @__PURE__ */ jsxRuntime.jsx(designSystem.CrumbLink, { href: `/admin/plugins/${index.PLUGIN_ID}`, children: "Projects" }),
-        /* @__PURE__ */ jsxRuntime.jsx(designSystem.CrumbLink, { href: `/admin/plugins/${index.PLUGIN_ID}/projects/${projectId}`, children: "Namespaces" }),
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.CrumbLink, { href: `/admin/plugins/${index.PLUGIN_ID}/projects/${projectId}`, children: [
+          "Namespaces ",
+          namespace ? ` - ${namespace.name}` : ""
+        ] }),
         /* @__PURE__ */ jsxRuntime.jsx(designSystem.Crumb, { isCurrent: true, children: "Translations" })
       ] })
     ] }),

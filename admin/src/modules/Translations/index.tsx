@@ -143,20 +143,27 @@ export const Translations = () => {
                         )}
                       </Flex>
                     </Td>
-                    <Td style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+                    <Td
+                      style={{
+                        paddingTop: '10px',
+                        paddingBottom: '10px',
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word',
+                      }}
+                    >
                       {locales.map((locale) => (
-                        <Flex key={locale.code} marginRight={1} padding={1}>
+                        <Flex key={locale.code} marginRight={1} padding={1} alignItems="flex-start">
                           <Box display="flex">
                             <Typography
-                              lineHeight="11px"
+                              lineHeight="14px"
                               fontWeight="bold"
-                              variant="pi"
+                              variant="omega"
                               style={{ minWidth: '100px' }}
                             >
                               {locale.name}:{' '}
                             </Typography>
                           </Box>
-                          <Typography lineHeight="11px" variant="pi">
+                          <Typography lineHeight="16px" variant="omega">
                             {translation[locale.code] || '-'}
                           </Typography>
                         </Flex>

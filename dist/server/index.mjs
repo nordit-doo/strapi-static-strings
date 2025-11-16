@@ -213,24 +213,47 @@ const cliController = {
       const locales = await strapi.plugin("i18n").service("locales").find();
       const languages = locales.map((l) => l.code);
       const namespaces = await strapi.db.query(`plugin::${PLUGIN_ID}.namespace`).findMany({ where: { project: projectId }, orderBy: { name: "asc" } });
-      const resultNamespaces = [];
-      for (const ns of namespaces) {
-        const translations = await strapi.db.query(`plugin::${PLUGIN_ID}.translation`).findMany({ where: { namespace: ns.id }, orderBy: { key: "asc" } });
-        const formattedTranslations = {};
-        for (const t of translations) {
-          const langs = {};
-          for (const lang of languages) {
-            langs[lang] = t[lang] ?? "";
-          }
-          formattedTranslations[t.key] = langs;
-        }
-        resultNamespaces.push({
-          id: ns.id,
-          name: ns.name,
-          translations: formattedTranslations
-        });
+      if (namespaces.length === 0) {
+        return ctx.send({ projectId: projectDocumentId, languages, namespaces: [] });
       }
-      ctx.send({ projectId: projectDocumentId, languages, namespaces: resultNamespaces });
+      const allTranslations = await strapi.db.query(`plugin::${PLUGIN_ID}.translation`).findMany({
+        where: { namespace: { project: projectId } },
+        populate: ["namespace"],
+        orderBy: { key: "asc" }
+      });
+      if (allTranslations.length === 0) {
+        const ns2 = namespaces.map((ns3) => ({ id: ns3.id, name: ns3.name, translations: {} }));
+        return ctx.send({ projectId: projectDocumentId, languages, namespaces });
+      }
+      const knex = strapi.db.connection;
+      const fullRows = await knex(PLUGIN_TRANSLATION_TABLE_NAME).select("*").whereIn(
+        "id",
+        allTranslations.map((t) => t.id)
+      );
+      const translationsMeta = {};
+      for (const t of allTranslations) {
+        translationsMeta[t.id] = { nsId: t.namespace.id, nsName: t.namespace.name, key: t.key };
+      }
+      const namespaceMap = {};
+      for (const ns2 of namespaces) {
+        namespaceMap[ns2.name] = { id: ns2.id, name: ns2.name, translations: {} };
+      }
+      for (const row of fullRows) {
+        const meta = translationsMeta[row.id];
+        if (!meta) {
+          continue;
+        }
+        const nsName = meta.nsName;
+        const formatted = {};
+        for (const lang of languages) {
+          if (row[lang] !== void 0 && row[lang] !== null) {
+            formatted[lang] = row[lang];
+          }
+        }
+        namespaceMap[nsName].translations[meta.key] = formatted;
+      }
+      const ns = Object.values(namespaceMap);
+      ctx.send({ projectId: projectDocumentId, languages, namespaces: ns });
     } catch (error) {
       strapi.log.error("Error in cliGetProjectData:", error);
       ctx.throw(500, "Failed to fetch project data");

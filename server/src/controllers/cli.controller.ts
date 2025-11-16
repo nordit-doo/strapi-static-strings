@@ -12,47 +12,81 @@ export default {
 
   async cliGetProjectData(ctx) {
     const { projectId: projectDocumentId } = ctx.params;
-
     try {
+      /** 1. Load project */
       const project = await strapi.db
         .query(`plugin::${PLUGIN_ID}.project`)
         .findOne({ where: { document_id: projectDocumentId } });
-
       if (!project) {
         return ctx.notFound('Project not found');
       }
 
       const projectId = project.id;
-
+      /** 2. Load languages from i18n plugin */
       const locales = await strapi.plugin('i18n').service('locales').find();
       const languages = locales.map((l) => l.code);
 
+      /** 3. Load all namespaces for the project */
       const namespaces = await strapi.db
         .query(`plugin::${PLUGIN_ID}.namespace`)
         .findMany({ where: { project: projectId }, orderBy: { name: 'asc' } });
 
-      const resultNamespaces = [];
-      for (const ns of namespaces) {
-        const translations = await strapi.db
-          .query(`plugin::${PLUGIN_ID}.translation`)
-          .findMany({ where: { namespace: ns.id }, orderBy: { key: 'asc' } });
+      if (namespaces.length === 0) {
+        return ctx.send({ projectId: projectDocumentId, languages, namespaces: [] });
+      }
 
-        const formattedTranslations = {};
-        for (const t of translations) {
-          const langs = {};
-          for (const lang of languages) {
-            langs[lang] = t[lang] ?? '';
-          }
-          formattedTranslations[t.key] = langs;
+      /** 4. Load ALL translations for ALL namespaces in one ORM query */
+      const allTranslations = await strapi.db.query(`plugin::${PLUGIN_ID}.translation`).findMany({
+        where: { namespace: { project: projectId } },
+        populate: ['namespace'],
+        orderBy: { key: 'asc' },
+      });
+
+      if (allTranslations.length === 0) {
+        const ns = namespaces.map((ns) => ({ id: ns.id, name: ns.name, translations: {} }));
+        return ctx.send({ projectId: projectDocumentId, languages, namespaces });
+      }
+
+      /** 5. Load full DB rows (to get all dynamic language columns) */
+      const knex = strapi.db.connection;
+      const fullRows = await knex(PLUGIN_TRANSLATION_TABLE_NAME)
+        .select('*')
+        .whereIn(
+          'id',
+          allTranslations.map((t) => t.id)
+        );
+
+      /** 6. Prepare lookup map: translationId → namespace name + translation key */
+      const translationsMeta = {};
+      for (const t of allTranslations) {
+        translationsMeta[t.id] = { nsId: t.namespace.id, nsName: t.namespace.name, key: t.key };
+      }
+      /** 7. Build namespace map for output */
+      const namespaceMap = {};
+      for (const ns of namespaces) {
+        namespaceMap[ns.name] = { id: ns.id, name: ns.name, translations: {} };
+      }
+      /** 8. Combine full DB rows + meta → structured output */
+      for (const row of fullRows) {
+        const meta = translationsMeta[row.id];
+        if (!meta) {
+          continue;
         }
 
-        resultNamespaces.push({
-          id: ns.id,
-          name: ns.name,
-          translations: formattedTranslations,
-        });
+        const nsName = meta.nsName;
+        const formatted = {};
+        /** copy dynamic language fields */
+        for (const lang of languages) {
+          if (row[lang] !== undefined && row[lang] !== null) {
+            formatted[lang] = row[lang];
+          }
+        }
+        namespaceMap[nsName].translations[meta.key] = formatted;
       }
-      ctx.send({ projectId: projectDocumentId, languages, namespaces: resultNamespaces });
+
+      /** Final output */
+      const ns = Object.values(namespaceMap);
+      ctx.send({ projectId: projectDocumentId, languages, namespaces: ns });
     } catch (error) {
       strapi.log.error('Error in cliGetProjectData:', error);
       ctx.throw(500, 'Failed to fetch project data');

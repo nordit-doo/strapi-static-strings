@@ -4,7 +4,7 @@ import { useParams, useSearchParams, Link as Link$1, Routes, Route } from "react
 import { Modal, Flex, Field, Textarea, Button, Pagination as Pagination$1, PreviousLink, PageLink, Dots, NextLink, Typography, Box, Table, Thead, Tr, Th, Tbody, Td, Link, Badge, EmptyStateLayout, Loader, Main, Breadcrumbs, CrumbLink, Crumb, Card, CardBody, CardContent, CardTitle, Divider, Grid, SingleSelect, SingleSelectOption, Switch, DesignSystemProvider, darkTheme } from "@strapi/design-system";
 import { Trash, Plus, Pencil, Cog, Duplicate } from "@strapi/icons";
 import { useState, useImperativeHandle, forwardRef, useRef, useEffect, useMemo } from "react";
-import { P as PLUGIN_ID } from "./index-CB2grpf5.mjs";
+import { P as PLUGIN_ID } from "./index-BCw2dI3N.mjs";
 function bind(fn, thisArg) {
   return function wrap() {
     return fn.apply(thisArg, arguments);
@@ -3913,23 +3913,34 @@ const Translations = () => {
                 ),
                 isMissing && /* @__PURE__ */ jsx(Badge, { backgroundColor: "red", style: { padding: "2px 6px" }, children: /* @__PURE__ */ jsx(Typography, { fontWeight: "bold", textColor: "white", fontSize: "9px", children: "Missing" }) })
               ] }) }),
-              /* @__PURE__ */ jsx(Td, { style: { paddingTop: "10px", paddingBottom: "10px" }, children: locales.map((locale) => /* @__PURE__ */ jsxs(Flex, { marginRight: 1, padding: 1, children: [
-                /* @__PURE__ */ jsx(Box, { display: "flex", children: /* @__PURE__ */ jsxs(
-                  Typography,
-                  {
-                    lineHeight: "11px",
-                    fontWeight: "bold",
-                    variant: "pi",
-                    style: { minWidth: "100px" },
-                    children: [
-                      locale.name,
-                      ":",
-                      " "
-                    ]
-                  }
-                ) }),
-                /* @__PURE__ */ jsx(Typography, { lineHeight: "11px", variant: "pi", children: translation[locale.code] || "-" })
-              ] }, locale.code)) }),
+              /* @__PURE__ */ jsx(
+                Td,
+                {
+                  style: {
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word"
+                  },
+                  children: locales.map((locale) => /* @__PURE__ */ jsxs(Flex, { marginRight: 1, padding: 1, alignItems: "flex-start", children: [
+                    /* @__PURE__ */ jsx(Box, { display: "flex", children: /* @__PURE__ */ jsxs(
+                      Typography,
+                      {
+                        lineHeight: "14px",
+                        fontWeight: "bold",
+                        variant: "omega",
+                        style: { minWidth: "100px" },
+                        children: [
+                          locale.name,
+                          ":",
+                          " "
+                        ]
+                      }
+                    ) }),
+                    /* @__PURE__ */ jsx(Typography, { lineHeight: "16px", variant: "omega", children: translation[locale.code] || "-" })
+                  ] }, locale.code))
+                }
+              ),
               /* @__PURE__ */ jsx(Td, { style: { width: "120px" }, children: /* @__PURE__ */ jsxs(Flex, { gap: "0.5rem", justifyContent: "flex-end", children: [
                 /* @__PURE__ */ jsx(
                   Button,
@@ -3982,15 +3993,31 @@ const Translations = () => {
     )
   ] });
 };
+const getNamespace = async (id) => {
+  return axios.get(`/${PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
+};
 const TranslationsPage = () => {
   const params = useParams();
-  const { projectId } = params;
+  const { namespaceId, projectId } = params;
+  const [namespace, setNamespace] = useState(null);
+  useEffect(() => {
+    const fetchNamespace = async () => {
+      if (namespaceId) {
+        const data = await getNamespace(namespaceId);
+        setNamespace(data);
+      }
+    };
+    fetchNamespace();
+  }, [namespaceId]);
   return /* @__PURE__ */ jsxs(Main, { padding: "2rem", children: [
     /* @__PURE__ */ jsxs(Box, { paddingBottom: "1rem", children: [
       /* @__PURE__ */ jsx(Flex, { paddingBottom: "0.5rem", gap: "1rem", children: /* @__PURE__ */ jsx(Typography, { variant: "alpha", children: "Static translations" }) }),
       /* @__PURE__ */ jsxs(Breadcrumbs, { label: "Folder navigatation", children: [
         /* @__PURE__ */ jsx(CrumbLink, { href: `/admin/plugins/${PLUGIN_ID}`, children: "Projects" }),
-        /* @__PURE__ */ jsx(CrumbLink, { href: `/admin/plugins/${PLUGIN_ID}/projects/${projectId}`, children: "Namespaces" }),
+        /* @__PURE__ */ jsxs(CrumbLink, { href: `/admin/plugins/${PLUGIN_ID}/projects/${projectId}`, children: [
+          "Namespaces ",
+          namespace ? ` - ${namespace.name}` : ""
+        ] }),
         /* @__PURE__ */ jsx(Crumb, { isCurrent: true, children: "Translations" })
       ] })
     ] }),

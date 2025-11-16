@@ -1,13 +1,31 @@
 import { Breadcrumbs, Box, Crumb, CrumbLink, Main, Typography } from '@strapi/design-system';
 import { Flex } from '@strapi/design-system';
+import axios from 'axios';
 
 import { Translations } from '../modules/Translations';
 import { PLUGIN_ID } from '../pluginId';
 import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+const getNamespace = async (id: string) => {
+  return axios.get(`/${PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
+};
 
 const TranslationsPage = () => {
   const params = useParams();
-  const { projectId } = params;
+  const { namespaceId, projectId } = params;
+
+  const [namespace, setNamespace] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchNamespace = async () => {
+      if (namespaceId) {
+        const data = await getNamespace(namespaceId);
+        setNamespace(data);
+      }
+    };
+    fetchNamespace();
+  }, [namespaceId]);
 
   return (
     <Main padding="2rem">
@@ -18,7 +36,7 @@ const TranslationsPage = () => {
         <Breadcrumbs label="Folder navigatation">
           <CrumbLink href={`/admin/plugins/${PLUGIN_ID}`}>Projects</CrumbLink>
           <CrumbLink href={`/admin/plugins/${PLUGIN_ID}/projects/${projectId}`}>
-            Namespaces
+            Namespaces {namespace ? ` - ${namespace.name}` : ''}
           </CrumbLink>
           <Crumb isCurrent>Translations</Crumb>
         </Breadcrumbs>
