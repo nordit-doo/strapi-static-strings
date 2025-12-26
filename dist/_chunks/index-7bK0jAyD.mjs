@@ -18,7 +18,7 @@ const index = {
         defaultMessage: "Static translations"
       },
       Component: async () => {
-        const App = await import("./App-DK-JYD5f.mjs");
+        const App = await import("./App-CrMSWdVH.mjs");
         return App;
       },
       permissions: []

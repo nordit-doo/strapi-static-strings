@@ -6,20 +6,27 @@ import { IPagination } from '../../../../types/Common';
 import { IProject } from '../../../../types/Project';
 import { PLUGIN_ID } from '../../pluginId';
 import { useNotification } from '@strapi/strapi/admin';
+import { IConfirmModalRef } from 'src/components/ConfirmModal/types';
 
 const getNamespaces = async () => {
   return axios(`/${PLUGIN_ID}/api/projects`).then((res) => res.data);
 };
 
+const deleteProject = async (id: string) => {
+  return axios.delete(`/${PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
+};
+
 export const useHook = () => {
   const { toggleNotification } = useNotification();
 
+  const confirmDeleteModalRef = useRef<IConfirmModalRef<unknown> | null>(null);
   const projectCreatedEditModalRef = useRef<{ open: (data?: IProject) => void } | null>(null);
 
   const [isPending, setIsPending] = useState(true);
   const [projects, setProjects] = useState<{ items: IProject[]; pagination: IPagination } | null>(
     null
   );
+  const [selectedDeleteProject, setSelectedDeleteProject] = useState<IProject | null>(null);
 
   const handleClipboardCopy = (project: IProject) => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -35,9 +42,36 @@ export const useHook = () => {
     projectCreatedEditModalRef.current?.open(project);
   };
 
-  const handleDelete = (project: IProject) => (e: React.MouseEvent) => {
+  const handleToggleDelete = (project?: IProject) => async (e: React.MouseEvent) => {
     e.preventDefault();
-    // TODO: Implement delete logic here
+    e.stopPropagation();
+    if (project) {
+      setSelectedDeleteProject(project);
+      confirmDeleteModalRef.current?.open(project);
+    } else {
+      setSelectedDeleteProject(null);
+    }
+  };
+
+  const handleDeleteConfirm = async (): Promise<boolean> => {
+    if (selectedDeleteProject?.documentId) {
+      try {
+        await deleteProject(selectedDeleteProject.documentId);
+        await handleRefetch();
+        toggleNotification({
+          type: 'success',
+          message: 'Project deleted successfully!',
+        });
+        return true;
+      } catch (error) {
+        console.error(error);
+        toggleNotification({
+          type: 'danger',
+          message: 'Failed to delete project.',
+        });
+      }
+    }
+    return false;
   };
 
   const handleProjectCreate = () => {
@@ -56,13 +90,16 @@ export const useHook = () => {
   }, []);
 
   return {
+    confirmDeleteModalRef,
     handleClipboardCopy,
-    handleDelete,
+    handleDeleteConfirm,
     handleEdit,
     handleProjectCreate,
     handleRefetch,
+    handleToggleDelete,
     isPending,
     projectCreatedEditModalRef,
     projects,
+    selectedDeleteProject,
   };
 };

@@ -19,7 +19,7 @@ const index = {
         defaultMessage: "Static translations"
       },
       Component: async () => {
-        const App = await Promise.resolve().then(() => require("./App-Bi-Dn08Q.js"));
+        const App = await Promise.resolve().then(() => require("./App-Dgd95DFw.js"));
         return App;
       },
       permissions: []

@@ -4,19 +4,23 @@ import { Plus } from '@strapi/icons';
 
 import { ProjectCard } from './components/ProjectCard';
 import { ProjectCreateEditModal } from './components/ProjectCreateEditModal';
+import { ConfirmModal } from '../../components/ConfirmModal';
 import { useHook } from './hook';
 import { PLUGIN_ID } from '../../pluginId';
 
 export const ProjectsList = () => {
   const {
+    confirmDeleteModalRef,
     handleClipboardCopy,
-    handleDelete,
+    handleDeleteConfirm,
     handleEdit,
     handleProjectCreate,
     handleRefetch,
+    handleToggleDelete,
     isPending,
     projectCreatedEditModalRef,
     projects,
+    selectedDeleteProject,
   } = useHook();
 
   const renderLoader = () => {
@@ -76,7 +80,7 @@ export const ProjectsList = () => {
                 <ProjectCard
                   onClipboardCopy={handleClipboardCopy}
                   onEdit={handleEdit}
-                  onDelete={handleDelete}
+                  onDelete={handleToggleDelete}
                   project={project}
                 />
               </Grid.Item>
@@ -93,6 +97,12 @@ export const ProjectsList = () => {
       {renderEmptyState()}
       {renderLoader()}
       <ProjectCreateEditModal ref={projectCreatedEditModalRef} refetch={handleRefetch} />
+      <ConfirmModal
+        ref={confirmDeleteModalRef}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Project"
+        text={`Are you sure you want to delete the project "${selectedDeleteProject?.name}"? This action cannot be undone.`}
+      />
     </>
   );
 };
