@@ -53,20 +53,22 @@ export default {
     try {
       const namespaces = await strapi.db
         .query(`plugin::${PLUGIN_ID}.namespace`)
-        .findMany({ where: { project: projectId }, select: ['id'] });
+        .findMany({ where: { project: { documentId: projectId } }, select: ['id', 'documentId'] });
 
-      const namespaceIds = namespaces.map((ns) => ns.id);
+      const namespaceIds = namespaces.map((ns) => ns.documentId);
       if (namespaceIds.length > 0) {
         await strapi.db.query(`plugin::${PLUGIN_ID}.translation`).deleteMany({
-          where: { namespace: { $in: namespaceIds } },
+          where: { namespace: { documentId: { $in: namespaceIds } } },
         });
       }
 
       await strapi.db.query(`plugin::${PLUGIN_ID}.namespace`).deleteMany({
-        where: { project: projectId },
+        where: { project: { documentId: projectId } },
       });
 
-      await strapi.db.query(`plugin::${PLUGIN_ID}.project`).delete({ where: { id: projectId } });
+      await strapi.db
+        .query(`plugin::${PLUGIN_ID}.project`)
+        .delete({ where: { documentId: projectId } });
 
       ctx.body = { success: true, projectId };
     } catch (error) {
