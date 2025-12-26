@@ -6,10 +6,13 @@ import {
   EmptyStateLayout,
   Flex,
   Loader,
+  SearchForm,
+  Searchbar,
   Switch,
   Table,
   Tbody,
   Td,
+  TextInput,
   Th,
   Thead,
   Tr,
@@ -34,10 +37,12 @@ export const Translations = () => {
     handleTranslationCreate,
     handlePagePress,
     handleRefetch,
+    handleSearchChange,
     handleShowMissingTranslationsOnlyChange,
     handleToggleDeleteTranslation,
     isPending,
     namespaceId,
+    searchQuery,
     translations,
     projectId,
     selectedDeleteTranslation,
@@ -82,24 +87,21 @@ export const Translations = () => {
     return (
       <>
         {!!translations?.items?.length && (
-          <Flex marginBottom="1rem">
-            <Button
-              marginRight="1rem"
-              onClick={handleTranslationCreate}
-              startIcon={<Plus />}
-              variant="secondary"
-            >
-              Add translation
-            </Button>
-            <Switch
-              checked={showMissingTranslationsOnly}
-              name="showMissingTranslationsOnly"
-              onLabel="Show missing translations only"
-              offLabel="Show missing translations only"
-              onCheckedChange={handleShowMissingTranslationsOnlyChange}
-              visibleLabels
-            />
-          </Flex>
+          <>
+            <Flex marginBottom="1rem" gap="1rem">
+              <Button onClick={handleTranslationCreate} startIcon={<Plus />} variant="secondary">
+                Add translation
+              </Button>
+              <Switch
+                checked={showMissingTranslationsOnly}
+                name="showMissingTranslationsOnly"
+                onLabel="Show missing translations only"
+                offLabel="Show missing translations only"
+                onCheckedChange={handleShowMissingTranslationsOnlyChange}
+                visibleLabels
+              />
+            </Flex>
+          </>
         )}
         <Box paddingTop="1rem" paddingBottom="1rem">
           <Table colCount={3} rowCount={translations?.items?.length || 0}>
@@ -202,6 +204,14 @@ export const Translations = () => {
 
   return (
     <>
+      <Box marginBottom="2rem" width="100%">
+        <TextInput
+          name="search"
+          placeholder="Search by key or translation value..."
+          value={searchQuery}
+          onChange={(e) => handleSearchChange(e.target.value)}
+        />
+      </Box>
       {renderContent()}
       {renderEmptyState()}
       {renderLoader()}

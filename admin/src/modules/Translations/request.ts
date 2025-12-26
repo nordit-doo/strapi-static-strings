@@ -8,15 +8,18 @@ export const getTranslation = async ({
   page,
   projectId,
   showMissingOnly,
+  search,
 }: {
   namespaceId: number;
   page: number;
   projectId: number;
   showMissingOnly: boolean;
+  search?: string;
 }) => {
+  const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
   return axios
     .get(
-      `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations?page=${page}&showMissingOnly=${showMissingOnly}`
+      `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
     )
     .then((res) => res.data);
 };

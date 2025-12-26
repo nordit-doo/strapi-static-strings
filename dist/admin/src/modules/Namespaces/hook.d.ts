@@ -8,9 +8,11 @@ export declare const useHook: () => {
     handleEditNamespace: (namespace: INamespace) => () => void;
     handleNamespaceCreate: () => void;
     handlePagePress: (page: number) => void;
-    handleRefetch: ({ page }?: {
-        page: number;
+    handleRefetch: ({ page, search }?: {
+        page?: number;
+        search?: string;
     }) => Promise<void>;
+    handleSearchChange: (value: string) => void;
     handleToggleDeleteNamespace: (namespace?: INamespace) => () => Promise<void>;
     isPending: boolean;
     namespaces: {
@@ -21,5 +23,6 @@ export declare const useHook: () => {
         open: (data?: INamespace) => void;
     } | null>;
     projectId: string | undefined;
+    searchQuery: string;
     selectedDeleteNamespace: INamespace | null;
 };

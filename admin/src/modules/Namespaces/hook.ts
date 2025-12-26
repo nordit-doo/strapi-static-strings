@@ -19,6 +19,7 @@ export const useHook = () => {
     pagination: IPagination;
   } | null>(null);
   const [selectedDeleteNamespace, setSelectedDeleteNamespace] = useState<INamespace | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleEditNamespace = (namespace: INamespace) => () => {
     namespaceCreatedEditModalRef.current?.open(namespace);
@@ -40,7 +41,7 @@ export const useHook = () => {
           namespaceId: Number(selectedDeleteNamespace.id),
           projectId: Number(projectId),
         });
-        handleRefetch();
+        handleRefetch({ page: Number(params.get('page')) || 1, search: searchQuery });
         return true;
       } catch (error) {
         console.error(error);
@@ -55,15 +56,27 @@ export const useHook = () => {
 
   const handlePagePress = (page: number) => {
     setParams({ page: String(page) });
-    handleRefetch({ page });
+    handleRefetch({ page, search: searchQuery });
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setParams({ page: '1' });
+    handleRefetch({ page: 1, search: value });
   };
 
   const handleRefetch = async (
-    { page }: { page: number } = { page: Number(params.get('page')) || 1 }
+    { page, search }: { page?: number; search?: string } = {
+      page: Number(params.get('page')) || 1,
+      search: '',
+    }
   ) => {
+    const currentPage = page || 1;
+    const searchTerm = search !== undefined ? search : searchQuery;
+
     if (projectId) {
       setIsPending(true);
-      const data = await getNamespaces({ page, projectId });
+      const data = await getNamespaces({ page: currentPage, projectId, search: searchTerm });
       setNamespaces(data);
       setIsPending(false);
     }
@@ -72,7 +85,7 @@ export const useHook = () => {
   useEffect(() => {
     if (projectId) {
       const page = Number(params.get('page')) || 1;
-      handleRefetch({ page });
+      handleRefetch({ page, search: '' });
     }
   }, [projectId]);
 
@@ -83,11 +96,13 @@ export const useHook = () => {
     handleNamespaceCreate,
     handlePagePress,
     handleRefetch,
+    handleSearchChange,
     handleToggleDeleteNamespace,
     isPending,
     namespaces,
     namespaceCreatedEditModalRef,
     projectId,
+    searchQuery,
     selectedDeleteNamespace,
   };
 };

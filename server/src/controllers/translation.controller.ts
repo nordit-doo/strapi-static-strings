@@ -19,6 +19,7 @@ export default {
     const start = (page - 1) * pageSize;
     const namespaceId = Number(ctx.params.namespaceId);
     const showMissingOnly = String(ctx.query.showMissingOnly) === 'true';
+    const searchQuery = String(ctx.query.search || '').trim();
 
     const knex = strapi.db.connection;
     const table = PLUGIN_TRANSLATION_TABLE_NAME;
@@ -75,6 +76,20 @@ export default {
       };
       query.andWhere(addMissingClause);
       countQuery.andWhere(addMissingClause);
+    }
+
+    // filter: search by key or translation values
+    if (searchQuery) {
+      const addSearchClause = function (this: any) {
+        // Search in key field
+        this.where(`t.key`, 'like', `%${searchQuery}%`);
+        // Search in all locale fields
+        for (const lang of localeCodes) {
+          this.orWhere(`t.${lang}`, 'like', `%${searchQuery}%`);
+        }
+      };
+      query.andWhere(addSearchClause);
+      countQuery.andWhere(addSearchClause);
     }
 
     const items = await query;

@@ -1,10 +1,10 @@
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { useNotification, Page } from "@strapi/strapi/admin";
 import { useParams, useSearchParams, Link as Link$1, Routes, Route } from "react-router-dom";
-import { Modal, Flex, Field, Textarea, Button, Pagination as Pagination$1, PreviousLink, PageLink, Dots, NextLink, Typography, Box, Table, Thead, Tr, Th, Tbody, Td, Link, Badge, EmptyStateLayout, Loader, Main, Breadcrumbs, CrumbLink, Crumb, Card, CardBody, CardContent, CardTitle, Divider, Grid, SingleSelect, SingleSelectOption, Switch, DesignSystemProvider, darkTheme } from "@strapi/design-system";
+import { Modal, Flex, Field, Textarea, Button, Pagination as Pagination$1, PreviousLink, PageLink, Dots, NextLink, Typography, Box, TextInput, Table, Thead, Tr, Th, Tbody, Td, Link, Badge, EmptyStateLayout, Loader, Main, Breadcrumbs, CrumbLink, Crumb, Card, CardBody, CardContent, CardTitle, Divider, Grid, SingleSelect, SingleSelectOption, Switch, DesignSystemProvider, darkTheme } from "@strapi/design-system";
 import { Trash, Plus, Pencil, Cog, Duplicate } from "@strapi/icons";
 import { useState, useImperativeHandle, forwardRef, useRef, useEffect, useMemo } from "react";
-import { P as PLUGIN_ID } from "./index-BCw2dI3N.mjs";
+import { P as PLUGIN_ID } from "./index-C8g6X9PH.mjs";
 function bind(fn, thisArg) {
   return function wrap() {
     return fn.apply(thisArg, arguments);
@@ -12,7 +12,6 @@ function bind(fn, thisArg) {
 }
 const { toString } = Object.prototype;
 const { getPrototypeOf } = Object;
-const { iterator, toStringTag } = Symbol;
 const kindOf = /* @__PURE__ */ ((cache) => (thing) => {
   const str = toString.call(thing);
   return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
@@ -25,7 +24,7 @@ const typeOfTest = (type) => (thing) => typeof thing === type;
 const { isArray } = Array;
 const isUndefined = typeOfTest("undefined");
 function isBuffer(val) {
-  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor) && isFunction$1(val.constructor.isBuffer) && val.constructor.isBuffer(val);
+  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor) && isFunction(val.constructor.isBuffer) && val.constructor.isBuffer(val);
 }
 const isArrayBuffer = kindOfTest("ArrayBuffer");
 function isArrayBufferView(val) {
@@ -38,7 +37,7 @@ function isArrayBufferView(val) {
   return result;
 }
 const isString = typeOfTest("string");
-const isFunction$1 = typeOfTest("function");
+const isFunction = typeOfTest("function");
 const isNumber = typeOfTest("number");
 const isObject = (thing) => thing !== null && typeof thing === "object";
 const isBoolean = (thing) => thing === true || thing === false;
@@ -47,27 +46,17 @@ const isPlainObject = (val) => {
     return false;
   }
   const prototype2 = getPrototypeOf(val);
-  return (prototype2 === null || prototype2 === Object.prototype || Object.getPrototypeOf(prototype2) === null) && !(toStringTag in val) && !(iterator in val);
-};
-const isEmptyObject = (val) => {
-  if (!isObject(val) || isBuffer(val)) {
-    return false;
-  }
-  try {
-    return Object.keys(val).length === 0 && Object.getPrototypeOf(val) === Object.prototype;
-  } catch (e) {
-    return false;
-  }
+  return (prototype2 === null || prototype2 === Object.prototype || Object.getPrototypeOf(prototype2) === null) && !(Symbol.toStringTag in val) && !(Symbol.iterator in val);
 };
 const isDate = kindOfTest("Date");
 const isFile = kindOfTest("File");
 const isBlob = kindOfTest("Blob");
 const isFileList = kindOfTest("FileList");
-const isStream = (val) => isObject(val) && isFunction$1(val.pipe);
+const isStream = (val) => isObject(val) && isFunction(val.pipe);
 const isFormData = (thing) => {
   let kind;
-  return thing && (typeof FormData === "function" && thing instanceof FormData || isFunction$1(thing.append) && ((kind = kindOf(thing)) === "formdata" || // detect form-data instance
-  kind === "object" && isFunction$1(thing.toString) && thing.toString() === "[object FormData]"));
+  return thing && (typeof FormData === "function" && thing instanceof FormData || isFunction(thing.append) && ((kind = kindOf(thing)) === "formdata" || // detect form-data instance
+  kind === "object" && isFunction(thing.toString) && thing.toString() === "[object FormData]"));
 };
 const isURLSearchParams = kindOfTest("URLSearchParams");
 const [isReadableStream, isRequest, isResponse, isHeaders] = ["ReadableStream", "Request", "Response", "Headers"].map(kindOfTest);
@@ -86,9 +75,6 @@ function forEach(obj, fn, { allOwnKeys = false } = {}) {
       fn.call(null, obj[i], i, obj);
     }
   } else {
-    if (isBuffer(obj)) {
-      return;
-    }
     const keys = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj);
     const len = keys.length;
     let key;
@@ -99,9 +85,6 @@ function forEach(obj, fn, { allOwnKeys = false } = {}) {
   }
 }
 function findKey(obj, key) {
-  if (isBuffer(obj)) {
-    return null;
-  }
   key = key.toLowerCase();
   const keys = Object.keys(obj);
   let i = keys.length;
@@ -120,7 +103,7 @@ const _global = (() => {
 })();
 const isContextDefined = (context) => !isUndefined(context) && context !== _global;
 function merge() {
-  const { caseless, skipUndefined } = isContextDefined(this) && this || {};
+  const { caseless } = isContextDefined(this) && this || {};
   const result = {};
   const assignValue = (val, key) => {
     const targetKey = caseless && findKey(result, key) || key;
@@ -130,7 +113,7 @@ function merge() {
       result[targetKey] = merge({}, val);
     } else if (isArray(val)) {
       result[targetKey] = val.slice();
-    } else if (!skipUndefined || !isUndefined(val)) {
+    } else {
       result[targetKey] = val;
     }
   };
@@ -141,7 +124,7 @@ function merge() {
 }
 const extend = (a, b, thisArg, { allOwnKeys } = {}) => {
   forEach(b, (val, key) => {
-    if (thisArg && isFunction$1(val)) {
+    if (thisArg && isFunction(val)) {
       a[key] = bind(val, thisArg);
     } else {
       a[key] = val;
@@ -210,10 +193,10 @@ const isTypedArray = /* @__PURE__ */ ((TypedArray) => {
   };
 })(typeof Uint8Array !== "undefined" && getPrototypeOf(Uint8Array));
 const forEachEntry = (obj, fn) => {
-  const generator = obj && obj[iterator];
-  const _iterator = generator.call(obj);
+  const generator = obj && obj[Symbol.iterator];
+  const iterator = generator.call(obj);
   let result;
-  while ((result = _iterator.next()) && !result.done) {
+  while ((result = iterator.next()) && !result.done) {
     const pair = result.value;
     fn.call(obj, pair[0], pair[1]);
   }
@@ -250,11 +233,11 @@ const reduceDescriptors = (obj, reducer) => {
 };
 const freezeMethods = (obj) => {
   reduceDescriptors(obj, (descriptor, name) => {
-    if (isFunction$1(obj) && ["arguments", "caller", "callee"].indexOf(name) !== -1) {
+    if (isFunction(obj) && ["arguments", "caller", "callee"].indexOf(name) !== -1) {
       return false;
     }
     const value = obj[name];
-    if (!isFunction$1(value)) return;
+    if (!isFunction(value)) return;
     descriptor.enumerable = false;
     if ("writable" in descriptor) {
       descriptor.writable = false;
@@ -283,7 +266,7 @@ const toFiniteNumber = (value, defaultValue) => {
   return value != null && Number.isFinite(value = +value) ? value : defaultValue;
 };
 function isSpecCompliantForm(thing) {
-  return !!(thing && isFunction$1(thing.append) && thing[toStringTag] === "FormData" && thing[iterator]);
+  return !!(thing && isFunction(thing.append) && thing[Symbol.toStringTag] === "FormData" && thing[Symbol.iterator]);
 }
 const toJSONObject = (obj) => {
   const stack = new Array(10);
@@ -291,9 +274,6 @@ const toJSONObject = (obj) => {
     if (isObject(source)) {
       if (stack.indexOf(source) >= 0) {
         return;
-      }
-      if (isBuffer(source)) {
-        return source;
       }
       if (!("toJSON" in source)) {
         stack[i] = source;
@@ -311,7 +291,7 @@ const toJSONObject = (obj) => {
   return visit(obj, 0);
 };
 const isAsyncFn = kindOfTest("AsyncFunction");
-const isThenable = (thing) => thing && (isObject(thing) || isFunction$1(thing)) && isFunction$1(thing.then) && isFunction$1(thing.catch);
+const isThenable = (thing) => thing && (isObject(thing) || isFunction(thing)) && isFunction(thing.then) && isFunction(thing.catch);
 const _setImmediate = ((setImmediateSupported, postMessageSupported) => {
   if (setImmediateSupported) {
     return setImmediate;
@@ -329,10 +309,9 @@ const _setImmediate = ((setImmediateSupported, postMessageSupported) => {
   })(`axios@${Math.random()}`, []) : (cb) => setTimeout(cb);
 })(
   typeof setImmediate === "function",
-  isFunction$1(_global.postMessage)
+  isFunction(_global.postMessage)
 );
 const asap = typeof queueMicrotask !== "undefined" ? queueMicrotask.bind(_global) : typeof process !== "undefined" && process.nextTick || _setImmediate;
-const isIterable = (thing) => thing != null && isFunction$1(thing[iterator]);
 const utils$1 = {
   isArray,
   isArrayBuffer,
@@ -344,7 +323,6 @@ const utils$1 = {
   isBoolean,
   isObject,
   isPlainObject,
-  isEmptyObject,
   isReadableStream,
   isRequest,
   isResponse,
@@ -354,7 +332,7 @@ const utils$1 = {
   isFile,
   isBlob,
   isRegExp,
-  isFunction: isFunction$1,
+  isFunction,
   isStream,
   isURLSearchParams,
   isTypedArray,
@@ -390,8 +368,7 @@ const utils$1 = {
   isAsyncFn,
   isThenable,
   setImmediate: _setImmediate,
-  asap,
-  isIterable
+  asap
 };
 function AxiosError$1(message, code, config, request, response) {
   Error.call(this);
@@ -459,13 +436,9 @@ AxiosError$1.from = (error, code, config, request, response, customProps) => {
   }, (prop) => {
     return prop !== "isAxiosError";
   });
-  const msg = error && error.message ? error.message : "Error";
-  const errCode = code == null && error ? error.code : code;
-  AxiosError$1.call(axiosError, msg, errCode, config, request, response);
-  if (error && axiosError.cause == null) {
-    Object.defineProperty(axiosError, "cause", { value: error, configurable: true });
-  }
-  axiosError.name = error && error.name || "Error";
+  AxiosError$1.call(axiosError, error.message, code, config, request, response);
+  axiosError.cause = error;
+  axiosError.name = error.name;
   customProps && Object.assign(axiosError, customProps);
   return axiosError;
 };
@@ -514,9 +487,6 @@ function toFormData$1(obj, formData, options) {
     if (value === null) return "";
     if (utils$1.isDate(value)) {
       return value.toISOString();
-    }
-    if (utils$1.isBoolean(value)) {
-      return value.toString();
     }
     if (!useBlob && utils$1.isBlob(value)) {
       throw new AxiosError$1("Blob is not supported. Use a Buffer instead.");
@@ -613,7 +583,7 @@ prototype.toString = function toString2(encoder) {
   }, "").join("&");
 };
 function encode(val) {
-  return encodeURIComponent(val).replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+");
+  return encodeURIComponent(val).replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+").replace(/%5B/gi, "[").replace(/%5D/gi, "]");
 }
 function buildURL(url, params, options) {
   if (!params) {
@@ -740,16 +710,15 @@ const platform = {
   ...platform$1
 };
 function toURLEncodedForm(data, options) {
-  return toFormData$1(data, new platform.classes.URLSearchParams(), {
+  return toFormData$1(data, new platform.classes.URLSearchParams(), Object.assign({
     visitor: function(value, key, path, helpers) {
       if (platform.isNode && utils$1.isBuffer(value)) {
         this.append(key, value.toString("base64"));
         return false;
       }
       return helpers.defaultVisitor.apply(this, arguments);
-    },
-    ...options
-  });
+    }
+  }, options));
 }
 function parsePropPath(name) {
   return utils$1.matchAll(/\w+|\[(\w*)]/g, name).map((match) => {
@@ -869,7 +838,7 @@ const defaults = {
       const silentJSONParsing = transitional2 && transitional2.silentJSONParsing;
       const strictJSONParsing = !silentJSONParsing && JSONRequested;
       try {
-        return JSON.parse(data, this.parseReviver);
+        return JSON.parse(data);
       } catch (e) {
         if (strictJSONParsing) {
           if (e.name === "SyntaxError") {
@@ -1022,15 +991,10 @@ let AxiosHeaders$1 = class AxiosHeaders {
       setHeaders(header, valueOrRewrite);
     } else if (utils$1.isString(header) && (header = header.trim()) && !isValidHeaderName(header)) {
       setHeaders(parseHeaders(header), valueOrRewrite);
-    } else if (utils$1.isObject(header) && utils$1.isIterable(header)) {
-      let obj = {}, dest, key;
-      for (const entry of header) {
-        if (!utils$1.isArray(entry)) {
-          throw TypeError("Object iterator must return a key-value pair");
-        }
-        obj[key = entry[0]] = (dest = obj[key]) ? utils$1.isArray(dest) ? [...dest, entry[1]] : [dest, entry[1]] : entry[1];
+    } else if (utils$1.isHeaders(header)) {
+      for (const [key, value] of header.entries()) {
+        setHeader(value, key, rewrite);
       }
-      setHeaders(obj, valueOrRewrite);
     } else {
       header != null && setHeader(valueOrRewrite, header, rewrite);
     }
@@ -1133,9 +1097,6 @@ let AxiosHeaders$1 = class AxiosHeaders {
   }
   toString() {
     return Object.entries(this.toJSON()).map(([header, value]) => header + ": " + value).join("\n");
-  }
-  getSetCookie() {
-    return this.get("set-cookie") || [];
   }
   get [Symbol.toStringTag]() {
     return "AxiosHeaders";
@@ -1260,7 +1221,7 @@ function throttle(fn, freq) {
       clearTimeout(timer);
       timer = null;
     }
-    fn(...args);
+    fn.apply(null, args);
   };
   const throttled = (...args) => {
     const now = Date.now();
@@ -1435,7 +1396,7 @@ function mergeConfig$1(config1, config2) {
     validateStatus: mergeDirectKeys,
     headers: (a, b, prop) => mergeDeepProperties(headersToObject(a), headersToObject(b), prop, true)
   };
-  utils$1.forEach(Object.keys({ ...config1, ...config2 }), function computeConfigValue(prop) {
+  utils$1.forEach(Object.keys(Object.assign({}, config1, config2)), function computeConfigValue(prop) {
     const merge2 = mergeMap[prop] || mergeDeepProperties;
     const configValue = merge2(config1[prop], config2[prop], prop);
     utils$1.isUndefined(configValue) && merge2 !== mergeDirectKeys || (config[prop] = configValue);
@@ -1453,17 +1414,13 @@ const resolveConfig = (config) => {
       "Basic " + btoa((auth.username || "") + ":" + (auth.password ? unescape(encodeURIComponent(auth.password)) : ""))
     );
   }
+  let contentType;
   if (utils$1.isFormData(data)) {
     if (platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv) {
       headers.setContentType(void 0);
-    } else if (utils$1.isFunction(data.getHeaders)) {
-      const formHeaders = data.getHeaders();
-      const allowedHeaders = ["content-type", "content-length"];
-      Object.entries(formHeaders).forEach(([key, val]) => {
-        if (allowedHeaders.includes(key.toLowerCase())) {
-          headers.set(key, val);
-        }
-      });
+    } else if ((contentType = headers.getContentType()) !== false) {
+      const [type, ...tokens] = contentType ? contentType.split(";").map((token) => token.trim()).filter(Boolean) : [];
+      headers.setContentType([type || "multipart/form-data", ...tokens].join("; "));
     }
   }
   if (platform.hasStandardBrowserEnv) {
@@ -1541,11 +1498,8 @@ const xhrAdapter = isXHRAdapterSupported && function(config) {
       reject(new AxiosError$1("Request aborted", AxiosError$1.ECONNABORTED, config, request));
       request = null;
     };
-    request.onerror = function handleError(event) {
-      const msg = event && event.message ? event.message : "Network Error";
-      const err = new AxiosError$1(msg, AxiosError$1.ERR_NETWORK, config, request);
-      err.event = event || null;
-      reject(err);
+    request.onerror = function handleError() {
+      reject(new AxiosError$1("Network Error", AxiosError$1.ERR_NETWORK, config, request));
       request = null;
     };
     request.ontimeout = function handleTimeout() {
@@ -1676,7 +1630,7 @@ const readStream = async function* (stream) {
   }
 };
 const trackStream = (stream, chunkSize, onProgress, onFinish) => {
-  const iterator2 = readBytes(stream, chunkSize);
+  const iterator = readBytes(stream, chunkSize);
   let bytes = 0;
   let done;
   let _onFinish = (e) => {
@@ -1688,7 +1642,7 @@ const trackStream = (stream, chunkSize, onProgress, onFinish) => {
   return new ReadableStream({
     async pull(controller) {
       try {
-        const { done: done2, value } = await iterator2.next();
+        const { done: done2, value } = await iterator.next();
         if (done2) {
           _onFinish();
           controller.close();
@@ -1707,22 +1661,15 @@ const trackStream = (stream, chunkSize, onProgress, onFinish) => {
     },
     cancel(reason) {
       _onFinish(reason);
-      return iterator2.return();
+      return iterator.return();
     }
   }, {
     highWaterMark: 2
   });
 };
-const DEFAULT_CHUNK_SIZE = 64 * 1024;
-const { isFunction } = utils$1;
-const globalFetchAPI = (({ Request, Response }) => ({
-  Request,
-  Response
-}))(utils$1.global);
-const {
-  ReadableStream: ReadableStream$1,
-  TextEncoder
-} = utils$1.global;
+const isFetchSupported = typeof fetch === "function" && typeof Request === "function" && typeof Response === "function";
+const isReadableStreamSupported = isFetchSupported && typeof ReadableStream === "function";
+const encodeText = isFetchSupported && (typeof TextEncoder === "function" ? /* @__PURE__ */ ((encoder) => (str) => encoder.encode(str))(new TextEncoder()) : async (str) => new Uint8Array(await new Response(str).arrayBuffer()));
 const test = (fn, ...args) => {
   try {
     return !!fn(...args);
@@ -1730,202 +1677,162 @@ const test = (fn, ...args) => {
     return false;
   }
 };
-const factory = (env) => {
-  env = utils$1.merge.call({
-    skipUndefined: true
-  }, globalFetchAPI, env);
-  const { fetch: envFetch, Request, Response } = env;
-  const isFetchSupported = envFetch ? isFunction(envFetch) : typeof fetch === "function";
-  const isRequestSupported = isFunction(Request);
-  const isResponseSupported = isFunction(Response);
-  if (!isFetchSupported) {
-    return false;
-  }
-  const isReadableStreamSupported = isFetchSupported && isFunction(ReadableStream$1);
-  const encodeText = isFetchSupported && (typeof TextEncoder === "function" ? /* @__PURE__ */ ((encoder) => (str) => encoder.encode(str))(new TextEncoder()) : async (str) => new Uint8Array(await new Request(str).arrayBuffer()));
-  const supportsRequestStream = isRequestSupported && isReadableStreamSupported && test(() => {
-    let duplexAccessed = false;
-    const hasContentType = new Request(platform.origin, {
-      body: new ReadableStream$1(),
-      method: "POST",
-      get duplex() {
-        duplexAccessed = true;
-        return "half";
-      }
-    }).headers.has("Content-Type");
-    return duplexAccessed && !hasContentType;
+const supportsRequestStream = isReadableStreamSupported && test(() => {
+  let duplexAccessed = false;
+  const hasContentType = new Request(platform.origin, {
+    body: new ReadableStream(),
+    method: "POST",
+    get duplex() {
+      duplexAccessed = true;
+      return "half";
+    }
+  }).headers.has("Content-Type");
+  return duplexAccessed && !hasContentType;
+});
+const DEFAULT_CHUNK_SIZE = 64 * 1024;
+const supportsResponseStream = isReadableStreamSupported && test(() => utils$1.isReadableStream(new Response("").body));
+const resolvers = {
+  stream: supportsResponseStream && ((res) => res.body)
+};
+isFetchSupported && ((res) => {
+  ["text", "arrayBuffer", "blob", "formData", "stream"].forEach((type) => {
+    !resolvers[type] && (resolvers[type] = utils$1.isFunction(res[type]) ? (res2) => res2[type]() : (_, config) => {
+      throw new AxiosError$1(`Response type '${type}' is not supported`, AxiosError$1.ERR_NOT_SUPPORT, config);
+    });
   });
-  const supportsResponseStream = isResponseSupported && isReadableStreamSupported && test(() => utils$1.isReadableStream(new Response("").body));
-  const resolvers = {
-    stream: supportsResponseStream && ((res) => res.body)
-  };
-  isFetchSupported && (() => {
-    ["text", "arrayBuffer", "blob", "formData", "stream"].forEach((type) => {
-      !resolvers[type] && (resolvers[type] = (res, config) => {
-        let method = res && res[type];
-        if (method) {
-          return method.call(res);
-        }
-        throw new AxiosError$1(`Response type '${type}' is not supported`, AxiosError$1.ERR_NOT_SUPPORT, config);
-      });
-    });
-  })();
-  const getBodyLength = async (body) => {
-    if (body == null) {
-      return 0;
-    }
-    if (utils$1.isBlob(body)) {
-      return body.size;
-    }
-    if (utils$1.isSpecCompliantForm(body)) {
-      const _request = new Request(platform.origin, {
-        method: "POST",
-        body
-      });
-      return (await _request.arrayBuffer()).byteLength;
-    }
-    if (utils$1.isArrayBufferView(body) || utils$1.isArrayBuffer(body)) {
-      return body.byteLength;
-    }
-    if (utils$1.isURLSearchParams(body)) {
-      body = body + "";
-    }
-    if (utils$1.isString(body)) {
-      return (await encodeText(body)).byteLength;
-    }
-  };
-  const resolveBodyLength = async (headers, body) => {
-    const length = utils$1.toFiniteNumber(headers.getContentLength());
-    return length == null ? getBodyLength(body) : length;
-  };
-  return async (config) => {
-    let {
-      url,
-      method,
-      data,
-      signal,
-      cancelToken,
-      timeout,
-      onDownloadProgress,
-      onUploadProgress,
-      responseType,
-      headers,
-      withCredentials = "same-origin",
-      fetchOptions
-    } = resolveConfig(config);
-    let _fetch = envFetch || fetch;
-    responseType = responseType ? (responseType + "").toLowerCase() : "text";
-    let composedSignal = composeSignals([signal, cancelToken && cancelToken.toAbortSignal()], timeout);
-    let request = null;
-    const unsubscribe = composedSignal && composedSignal.unsubscribe && (() => {
-      composedSignal.unsubscribe();
-    });
-    let requestContentLength;
-    try {
-      if (onUploadProgress && supportsRequestStream && method !== "get" && method !== "head" && (requestContentLength = await resolveBodyLength(headers, data)) !== 0) {
-        let _request = new Request(url, {
-          method: "POST",
-          body: data,
-          duplex: "half"
-        });
-        let contentTypeHeader;
-        if (utils$1.isFormData(data) && (contentTypeHeader = _request.headers.get("content-type"))) {
-          headers.setContentType(contentTypeHeader);
-        }
-        if (_request.body) {
-          const [onProgress, flush] = progressEventDecorator(
-            requestContentLength,
-            progressEventReducer(asyncDecorator(onUploadProgress))
-          );
-          data = trackStream(_request.body, DEFAULT_CHUNK_SIZE, onProgress, flush);
-        }
-      }
-      if (!utils$1.isString(withCredentials)) {
-        withCredentials = withCredentials ? "include" : "omit";
-      }
-      const isCredentialsSupported = isRequestSupported && "credentials" in Request.prototype;
-      const resolvedOptions = {
-        ...fetchOptions,
-        signal: composedSignal,
-        method: method.toUpperCase(),
-        headers: headers.normalize().toJSON(),
-        body: data,
-        duplex: "half",
-        credentials: isCredentialsSupported ? withCredentials : void 0
-      };
-      request = isRequestSupported && new Request(url, resolvedOptions);
-      let response = await (isRequestSupported ? _fetch(request, fetchOptions) : _fetch(url, resolvedOptions));
-      const isStreamResponse = supportsResponseStream && (responseType === "stream" || responseType === "response");
-      if (supportsResponseStream && (onDownloadProgress || isStreamResponse && unsubscribe)) {
-        const options = {};
-        ["status", "statusText", "headers"].forEach((prop) => {
-          options[prop] = response[prop];
-        });
-        const responseContentLength = utils$1.toFiniteNumber(response.headers.get("content-length"));
-        const [onProgress, flush] = onDownloadProgress && progressEventDecorator(
-          responseContentLength,
-          progressEventReducer(asyncDecorator(onDownloadProgress), true)
-        ) || [];
-        response = new Response(
-          trackStream(response.body, DEFAULT_CHUNK_SIZE, onProgress, () => {
-            flush && flush();
-            unsubscribe && unsubscribe();
-          }),
-          options
-        );
-      }
-      responseType = responseType || "text";
-      let responseData = await resolvers[utils$1.findKey(resolvers, responseType) || "text"](response, config);
-      !isStreamResponse && unsubscribe && unsubscribe();
-      return await new Promise((resolve, reject) => {
-        settle(resolve, reject, {
-          data: responseData,
-          headers: AxiosHeaders$1.from(response.headers),
-          status: response.status,
-          statusText: response.statusText,
-          config,
-          request
-        });
-      });
-    } catch (err) {
-      unsubscribe && unsubscribe();
-      if (err && err.name === "TypeError" && /Load failed|fetch/i.test(err.message)) {
-        throw Object.assign(
-          new AxiosError$1("Network Error", AxiosError$1.ERR_NETWORK, config, request),
-          {
-            cause: err.cause || err
-          }
-        );
-      }
-      throw AxiosError$1.from(err, err && err.code, config, request);
-    }
-  };
-};
-const seedCache = /* @__PURE__ */ new Map();
-const getFetch = (config) => {
-  let env = config ? config.env : {};
-  const { fetch: fetch2, Request, Response } = env;
-  const seeds = [
-    Request,
-    Response,
-    fetch2
-  ];
-  let len = seeds.length, i = len, seed, target, map = seedCache;
-  while (i--) {
-    seed = seeds[i];
-    target = map.get(seed);
-    target === void 0 && map.set(seed, target = i ? /* @__PURE__ */ new Map() : factory(env));
-    map = target;
+})(new Response());
+const getBodyLength = async (body) => {
+  if (body == null) {
+    return 0;
   }
-  return target;
+  if (utils$1.isBlob(body)) {
+    return body.size;
+  }
+  if (utils$1.isSpecCompliantForm(body)) {
+    const _request = new Request(platform.origin, {
+      method: "POST",
+      body
+    });
+    return (await _request.arrayBuffer()).byteLength;
+  }
+  if (utils$1.isArrayBufferView(body) || utils$1.isArrayBuffer(body)) {
+    return body.byteLength;
+  }
+  if (utils$1.isURLSearchParams(body)) {
+    body = body + "";
+  }
+  if (utils$1.isString(body)) {
+    return (await encodeText(body)).byteLength;
+  }
 };
-getFetch();
+const resolveBodyLength = async (headers, body) => {
+  const length = utils$1.toFiniteNumber(headers.getContentLength());
+  return length == null ? getBodyLength(body) : length;
+};
+const fetchAdapter = isFetchSupported && (async (config) => {
+  let {
+    url,
+    method,
+    data,
+    signal,
+    cancelToken,
+    timeout,
+    onDownloadProgress,
+    onUploadProgress,
+    responseType,
+    headers,
+    withCredentials = "same-origin",
+    fetchOptions
+  } = resolveConfig(config);
+  responseType = responseType ? (responseType + "").toLowerCase() : "text";
+  let composedSignal = composeSignals([signal, cancelToken && cancelToken.toAbortSignal()], timeout);
+  let request;
+  const unsubscribe = composedSignal && composedSignal.unsubscribe && (() => {
+    composedSignal.unsubscribe();
+  });
+  let requestContentLength;
+  try {
+    if (onUploadProgress && supportsRequestStream && method !== "get" && method !== "head" && (requestContentLength = await resolveBodyLength(headers, data)) !== 0) {
+      let _request = new Request(url, {
+        method: "POST",
+        body: data,
+        duplex: "half"
+      });
+      let contentTypeHeader;
+      if (utils$1.isFormData(data) && (contentTypeHeader = _request.headers.get("content-type"))) {
+        headers.setContentType(contentTypeHeader);
+      }
+      if (_request.body) {
+        const [onProgress, flush] = progressEventDecorator(
+          requestContentLength,
+          progressEventReducer(asyncDecorator(onUploadProgress))
+        );
+        data = trackStream(_request.body, DEFAULT_CHUNK_SIZE, onProgress, flush);
+      }
+    }
+    if (!utils$1.isString(withCredentials)) {
+      withCredentials = withCredentials ? "include" : "omit";
+    }
+    const isCredentialsSupported = "credentials" in Request.prototype;
+    request = new Request(url, {
+      ...fetchOptions,
+      signal: composedSignal,
+      method: method.toUpperCase(),
+      headers: headers.normalize().toJSON(),
+      body: data,
+      duplex: "half",
+      credentials: isCredentialsSupported ? withCredentials : void 0
+    });
+    let response = await fetch(request);
+    const isStreamResponse = supportsResponseStream && (responseType === "stream" || responseType === "response");
+    if (supportsResponseStream && (onDownloadProgress || isStreamResponse && unsubscribe)) {
+      const options = {};
+      ["status", "statusText", "headers"].forEach((prop) => {
+        options[prop] = response[prop];
+      });
+      const responseContentLength = utils$1.toFiniteNumber(response.headers.get("content-length"));
+      const [onProgress, flush] = onDownloadProgress && progressEventDecorator(
+        responseContentLength,
+        progressEventReducer(asyncDecorator(onDownloadProgress), true)
+      ) || [];
+      response = new Response(
+        trackStream(response.body, DEFAULT_CHUNK_SIZE, onProgress, () => {
+          flush && flush();
+          unsubscribe && unsubscribe();
+        }),
+        options
+      );
+    }
+    responseType = responseType || "text";
+    let responseData = await resolvers[utils$1.findKey(resolvers, responseType) || "text"](response, config);
+    !isStreamResponse && unsubscribe && unsubscribe();
+    return await new Promise((resolve, reject) => {
+      settle(resolve, reject, {
+        data: responseData,
+        headers: AxiosHeaders$1.from(response.headers),
+        status: response.status,
+        statusText: response.statusText,
+        config,
+        request
+      });
+    });
+  } catch (err) {
+    unsubscribe && unsubscribe();
+    if (err && err.name === "TypeError" && /fetch/i.test(err.message)) {
+      throw Object.assign(
+        new AxiosError$1("Network Error", AxiosError$1.ERR_NETWORK, config, request),
+        {
+          cause: err.cause || err
+        }
+      );
+    }
+    throw AxiosError$1.from(err, err && err.code, config, request);
+  }
+});
 const knownAdapters = {
   http: httpAdapter,
   xhr: xhrAdapter,
-  fetch: {
-    get: getFetch
-  }
+  fetch: fetchAdapter
 };
 utils$1.forEach(knownAdapters, (fn, value) => {
   if (fn) {
@@ -1939,7 +1846,7 @@ utils$1.forEach(knownAdapters, (fn, value) => {
 const renderReason = (reason) => `- ${reason}`;
 const isResolvedHandle = (adapter) => utils$1.isFunction(adapter) || adapter === null || adapter === false;
 const adapters = {
-  getAdapter: (adapters2, config) => {
+  getAdapter: (adapters2) => {
     adapters2 = utils$1.isArray(adapters2) ? adapters2 : [adapters2];
     const { length } = adapters2;
     let nameOrAdapter;
@@ -1955,7 +1862,7 @@ const adapters = {
           throw new AxiosError$1(`Unknown adapter '${id}'`);
         }
       }
-      if (adapter && (utils$1.isFunction(adapter) || (adapter = adapter.get(config)))) {
+      if (adapter) {
         break;
       }
       rejectedReasons[id || "#" + i] = adapter;
@@ -1992,7 +1899,7 @@ function dispatchRequest(config) {
   if (["post", "put", "patch"].indexOf(config.method) !== -1) {
     config.headers.setContentType("application/x-www-form-urlencoded", false);
   }
-  const adapter = adapters.getAdapter(config.adapter || defaults.adapter, config);
+  const adapter = adapters.getAdapter(config.adapter || defaults.adapter);
   return adapter(config).then(function onAdapterResolution(response) {
     throwIfCancellationRequested(config);
     response.data = transformData.call(
@@ -2017,7 +1924,7 @@ function dispatchRequest(config) {
     return Promise.reject(reason);
   });
 }
-const VERSION$1 = "1.12.2";
+const VERSION$1 = "1.8.4";
 const validators$1 = {};
 ["object", "boolean", "number", "function", "string", "symbol"].forEach((type, i) => {
   validators$1[type] = function validator2(thing) {
@@ -2083,7 +1990,7 @@ const validator = {
 const validators = validator.validators;
 let Axios$1 = class Axios {
   constructor(instanceConfig) {
-    this.defaults = instanceConfig || {};
+    this.defaults = instanceConfig;
     this.interceptors = {
       request: new InterceptorManager(),
       response: new InterceptorManager()
@@ -2185,8 +2092,8 @@ let Axios$1 = class Axios {
     let len;
     if (!synchronousRequestInterceptors) {
       const chain = [dispatchRequest.bind(this), void 0];
-      chain.unshift(...requestInterceptorChain);
-      chain.push(...responseInterceptorChain);
+      chain.unshift.apply(chain, requestInterceptorChain);
+      chain.push.apply(chain, responseInterceptorChain);
       len = chain.length;
       promise = Promise.resolve(config);
       while (i < len) {
@@ -2196,6 +2103,7 @@ let Axios$1 = class Axios {
     }
     len = requestInterceptorChain.length;
     let newConfig = config;
+    i = 0;
     while (i < len) {
       const onFulfilled = requestInterceptorChain[i++];
       const onRejected = requestInterceptorChain[i++];
@@ -2604,9 +2512,14 @@ const NamespaceCreateEditModal = forwardRef(({ projectId, refetch }, ref) => {
     ] })
   ] }) });
 });
-const getNamespaces$2 = async ({ page, projectId }) => {
+const getNamespaces$2 = async ({
+  page,
+  projectId,
+  search
+}) => {
+  const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
   return axios(
-    `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/missing-translations?page=${page}`
+    `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/missing-translations?page=${page}${searchParam}`
   ).then((res) => res.data);
 };
 const deleteNamespace = async ({
@@ -2630,6 +2543,7 @@ const useHook$6 = () => {
   const [isPending, setIsPending] = useState(true);
   const [namespaces, setNamespaces] = useState(null);
   const [selectedDeleteNamespace, setSelectedDeleteNamespace] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const handleEditNamespace = (namespace) => () => {
     namespaceCreatedEditModalRef.current?.open(namespace);
   };
@@ -2648,7 +2562,7 @@ const useHook$6 = () => {
           namespaceId: Number(selectedDeleteNamespace.id),
           projectId: Number(projectId)
         });
-        handleRefetch();
+        handleRefetch({ page: Number(params.get("page")) || 1, search: searchQuery });
         return true;
       } catch (error) {
         console.error(error);
@@ -2661,12 +2575,22 @@ const useHook$6 = () => {
   };
   const handlePagePress = (page) => {
     setParams({ page: String(page) });
-    handleRefetch({ page });
+    handleRefetch({ page, search: searchQuery });
   };
-  const handleRefetch = async ({ page } = { page: Number(params.get("page")) || 1 }) => {
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+    setParams({ page: "1" });
+    handleRefetch({ page: 1, search: value });
+  };
+  const handleRefetch = async ({ page, search } = {
+    page: Number(params.get("page")) || 1,
+    search: ""
+  }) => {
+    const currentPage = page || 1;
+    const searchTerm = search !== void 0 ? search : searchQuery;
     if (projectId) {
       setIsPending(true);
-      const data = await getNamespaces$2({ page, projectId });
+      const data = await getNamespaces$2({ page: currentPage, projectId, search: searchTerm });
       setNamespaces(data);
       setIsPending(false);
     }
@@ -2674,7 +2598,7 @@ const useHook$6 = () => {
   useEffect(() => {
     if (projectId) {
       const page = Number(params.get("page")) || 1;
-      handleRefetch({ page });
+      handleRefetch({ page, search: "" });
     }
   }, [projectId]);
   return {
@@ -2684,11 +2608,13 @@ const useHook$6 = () => {
     handleNamespaceCreate,
     handlePagePress,
     handleRefetch,
+    handleSearchChange,
     handleToggleDeleteNamespace,
     isPending,
     namespaces,
     namespaceCreatedEditModalRef,
     projectId,
+    searchQuery,
     selectedDeleteNamespace
   };
 };
@@ -2870,11 +2796,13 @@ const Namespaces = () => {
     handleNamespaceCreate,
     handlePagePress,
     handleRefetch,
+    handleSearchChange,
     handleToggleDeleteNamespace,
     isPending,
     namespaces,
     namespaceCreatedEditModalRef,
     projectId,
+    searchQuery,
     selectedDeleteNamespace
   } = useHook$6();
   const renderLoader = () => {
@@ -2968,6 +2896,15 @@ const Namespaces = () => {
     ] });
   };
   return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(Box, { marginBottom: "2rem", width: "100%", children: /* @__PURE__ */ jsx(
+      TextInput,
+      {
+        name: "search",
+        placeholder: "Search namespaces by name or description...",
+        value: searchQuery,
+        onChange: (e) => handleSearchChange(e.target.value)
+      }
+    ) }),
     renderContent(),
     renderEmptyState(),
     renderLoader(),
@@ -3457,10 +3394,12 @@ const getTranslation = async ({
   namespaceId,
   page,
   projectId,
-  showMissingOnly
+  showMissingOnly,
+  search
 }) => {
+  const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
   return axios.get(
-    `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations?page=${page}&showMissingOnly=${showMissingOnly}`
+    `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
   ).then((res) => res.data);
 };
 const createTranslation = async ({
@@ -3742,6 +3681,7 @@ const useHook = () => {
   const [isPending, setIsPending] = useState(true);
   const [translations, setTranslations] = useState(null);
   const [showMissingTranslationsOnly, setShowMissingTranslationsOnly] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const handleEditTranslation = (translation) => () => {
     translationCreatedEditModalRef.current?.open(translation);
   };
@@ -3763,7 +3703,8 @@ const useHook = () => {
         });
         handleRefetch({
           page: Number(searchParams.get("page")) || 1,
-          showMissingOnly: showMissingTranslationsOnly
+          showMissingOnly: showMissingTranslationsOnly,
+          search: searchQuery
         });
         return true;
       } catch (error) {
@@ -3777,20 +3718,32 @@ const useHook = () => {
   };
   const handlePagePress = (page) => {
     setSearchParams({ page: String(page) });
-    handleRefetch({ page, showMissingOnly: showMissingTranslationsOnly });
+    handleRefetch({ page, showMissingOnly: showMissingTranslationsOnly, search: searchQuery });
   };
-  const handleRefetch = async ({ page, showMissingOnly } = {
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+    setSearchParams({ page: "1" });
+    handleRefetch({ page: 1, showMissingOnly: showMissingTranslationsOnly, search: value });
+  };
+  const handleRefetch = async ({
+    page,
+    showMissingOnly,
+    search
+  } = {
     page: 1,
-    showMissingOnly: showMissingTranslationsOnly
+    showMissingOnly: showMissingTranslationsOnly,
+    search: ""
   }) => {
     const currentPage = page || 1;
+    const searchTerm = search !== void 0 ? search : searchQuery;
     if (projectId) {
       setIsPending(true);
       const data = await getTranslation({
         namespaceId: Number(namespaceId),
         page: currentPage,
         projectId: Number(projectId),
-        showMissingOnly
+        showMissingOnly,
+        search: searchTerm
       });
       setTranslations(data);
       setIsPending(false);
@@ -3798,11 +3751,11 @@ const useHook = () => {
   };
   const handleShowMissingTranslationsOnlyChange = (value) => {
     setShowMissingTranslationsOnly(value);
-    handleRefetch({ page: 1, showMissingOnly: value });
+    handleRefetch({ page: 1, showMissingOnly: value, search: searchQuery });
   };
   useEffect(() => {
     if (projectId) {
-      handleRefetch({ page: 1, showMissingOnly: showMissingTranslationsOnly });
+      handleRefetch({ page: 1, showMissingOnly: showMissingTranslationsOnly, search: "" });
     }
   }, [projectId]);
   return {
@@ -3811,11 +3764,13 @@ const useHook = () => {
     handleEditTranslation,
     handlePagePress,
     handleRefetch,
+    handleSearchChange,
     handleShowMissingTranslationsOnlyChange,
     handleToggleDeleteTranslation,
     handleTranslationCreate,
     isPending,
     namespaceId,
+    searchQuery,
     translations,
     projectId,
     selectedDeleteTranslation,
@@ -3832,10 +3787,12 @@ const Translations = () => {
     handleTranslationCreate,
     handlePagePress,
     handleRefetch,
+    handleSearchChange,
     handleShowMissingTranslationsOnlyChange,
     handleToggleDeleteTranslation,
     isPending,
     namespaceId,
+    searchQuery,
     translations,
     projectId,
     selectedDeleteTranslation,
@@ -3865,17 +3822,8 @@ const Translations = () => {
       return /* @__PURE__ */ jsx(Fragment, {});
     }
     return /* @__PURE__ */ jsxs(Fragment, { children: [
-      !!translations?.items?.length && /* @__PURE__ */ jsxs(Flex, { marginBottom: "1rem", children: [
-        /* @__PURE__ */ jsx(
-          Button,
-          {
-            marginRight: "1rem",
-            onClick: handleTranslationCreate,
-            startIcon: /* @__PURE__ */ jsx(Plus, {}),
-            variant: "secondary",
-            children: "Add translation"
-          }
-        ),
+      !!translations?.items?.length && /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs(Flex, { marginBottom: "1rem", gap: "1rem", children: [
+        /* @__PURE__ */ jsx(Button, { onClick: handleTranslationCreate, startIcon: /* @__PURE__ */ jsx(Plus, {}), variant: "secondary", children: "Add translation" }),
         /* @__PURE__ */ jsx(
           Switch,
           {
@@ -3887,7 +3835,7 @@ const Translations = () => {
             visibleLabels: true
           }
         )
-      ] }),
+      ] }) }),
       /* @__PURE__ */ jsxs(Box, { paddingTop: "1rem", paddingBottom: "1rem", children: [
         /* @__PURE__ */ jsxs(Table, { colCount: 3, rowCount: translations?.items?.length || 0, children: [
           /* @__PURE__ */ jsx(Thead, { children: /* @__PURE__ */ jsxs(Tr, { style: { width: "280px" }, children: [
@@ -3969,6 +3917,15 @@ const Translations = () => {
     ] });
   };
   return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(Box, { marginBottom: "2rem", width: "100%", children: /* @__PURE__ */ jsx(
+      TextInput,
+      {
+        name: "search",
+        placeholder: "Search by key or translation value...",
+        value: searchQuery,
+        onChange: (e) => handleSearchChange(e.target.value)
+      }
+    ) }),
     renderContent(),
     renderEmptyState(),
     renderLoader(),

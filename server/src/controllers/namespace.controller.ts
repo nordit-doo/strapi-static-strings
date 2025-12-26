@@ -49,6 +49,7 @@ export default {
     const pageSize = Number(ctx.query.pageSize) || 15;
     const start = (page - 1) * pageSize;
     const projectId = Number(ctx.params.projectId);
+    const search = ctx.query.search ? String(ctx.query.search).trim() : '';
 
     const knex = strapi.db.connection;
 
@@ -121,6 +122,13 @@ export default {
         } else {
           qb.where('n.project_id', projectId);
         }
+        if (search) {
+          qb.where((builder) => {
+            builder
+              .where('n.name', 'ilike', `%${search}%`)
+              .orWhere('n.description', 'ilike', `%${search}%`);
+          });
+        }
       })
       .leftJoin({ nt: nsTrJoinTable }, `nt.${nsTrJoinCol}`, 'n.id')
       .leftJoin({ t: trTable }, 't.id', `nt.${nsTrInvCol}`)
@@ -141,6 +149,13 @@ export default {
           );
         } else {
           qb.where('n.project_id', projectId);
+        }
+        if (search) {
+          qb.where((builder) => {
+            builder
+              .where('n.name', 'ilike', `%${search}%`)
+              .orWhere('n.description', 'ilike', `%${search}%`);
+          });
         }
       });
 

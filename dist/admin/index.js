@@ -1,4 +1,4 @@
 "use strict";
-const index = require("../_chunks/index-Cpw83a_v.js");
+const index = require("../_chunks/index-DG-oXNOV.js");
 require("@strapi/icons");
 module.exports = index.index;

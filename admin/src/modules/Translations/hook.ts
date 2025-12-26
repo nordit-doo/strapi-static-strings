@@ -26,6 +26,7 @@ export const useHook = () => {
     pagination: IPagination;
   } | null>(null);
   const [showMissingTranslationsOnly, setShowMissingTranslationsOnly] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleEditTranslation = (translation: ITranslation) => () => {
     translationCreatedEditModalRef.current?.open(translation);
@@ -51,6 +52,7 @@ export const useHook = () => {
         handleRefetch({
           page: Number(searchParams.get('page')) || 1,
           showMissingOnly: showMissingTranslationsOnly,
+          search: searchQuery,
         });
         return true;
       } catch (error) {
@@ -66,16 +68,28 @@ export const useHook = () => {
 
   const handlePagePress = (page: number) => {
     setSearchParams({ page: String(page) });
-    handleRefetch({ page, showMissingOnly: showMissingTranslationsOnly });
+    handleRefetch({ page, showMissingOnly: showMissingTranslationsOnly, search: searchQuery });
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setSearchParams({ page: '1' });
+    handleRefetch({ page: 1, showMissingOnly: showMissingTranslationsOnly, search: value });
   };
 
   const handleRefetch = async (
-    { page, showMissingOnly }: { page?: number; showMissingOnly: boolean } = {
+    {
+      page,
+      showMissingOnly,
+      search,
+    }: { page?: number; showMissingOnly: boolean; search?: string } = {
       page: 1,
       showMissingOnly: showMissingTranslationsOnly,
+      search: '',
     }
   ) => {
     const currentPage = page || 1;
+    const searchTerm = search !== undefined ? search : searchQuery;
 
     if (projectId) {
       setIsPending(true);
@@ -84,6 +98,7 @@ export const useHook = () => {
         page: currentPage,
         projectId: Number(projectId),
         showMissingOnly,
+        search: searchTerm,
       });
       setTranslations(data);
       setIsPending(false);
@@ -92,12 +107,12 @@ export const useHook = () => {
 
   const handleShowMissingTranslationsOnlyChange = (value: boolean) => {
     setShowMissingTranslationsOnly(value);
-    handleRefetch({ page: 1, showMissingOnly: value });
+    handleRefetch({ page: 1, showMissingOnly: value, search: searchQuery });
   };
 
   useEffect(() => {
     if (projectId) {
-      handleRefetch({ page: 1, showMissingOnly: showMissingTranslationsOnly });
+      handleRefetch({ page: 1, showMissingOnly: showMissingTranslationsOnly, search: '' });
     }
   }, [projectId]);
 
@@ -107,11 +122,13 @@ export const useHook = () => {
     handleEditTranslation,
     handlePagePress,
     handleRefetch,
+    handleSearchChange,
     handleShowMissingTranslationsOnlyChange,
     handleToggleDeleteTranslation,
     handleTranslationCreate,
     isPending,
     namespaceId,
+    searchQuery,
     translations,
     projectId,
     selectedDeleteTranslation,

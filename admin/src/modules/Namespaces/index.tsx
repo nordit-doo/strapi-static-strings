@@ -9,6 +9,7 @@ import {
   Table,
   Tbody,
   Td,
+  TextInput,
   Th,
   Thead,
   Tr,
@@ -30,11 +31,13 @@ export const Namespaces = () => {
     handleNamespaceCreate,
     handlePagePress,
     handleRefetch,
+    handleSearchChange,
     handleToggleDeleteNamespace,
     isPending,
     namespaces,
     namespaceCreatedEditModalRef,
     projectId,
+    searchQuery,
     selectedDeleteNamespace,
   } = useHook();
 
@@ -164,6 +167,14 @@ export const Namespaces = () => {
 
   return (
     <>
+      <Box marginBottom="2rem" width="100%">
+        <TextInput
+          name="search"
+          placeholder="Search namespaces by name or description..."
+          value={searchQuery}
+          onChange={(e) => handleSearchChange(e.target.value)}
+        />
+      </Box>
       {renderContent()}
       {renderEmptyState()}
       {renderLoader()}

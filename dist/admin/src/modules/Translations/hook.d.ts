@@ -8,15 +8,18 @@ export declare const useHook: () => {
     handleDeleteConfirm: () => Promise<boolean>;
     handleEditTranslation: (translation: ITranslation) => () => void;
     handlePagePress: (page: number) => void;
-    handleRefetch: ({ page, showMissingOnly }?: {
+    handleRefetch: ({ page, showMissingOnly, search, }?: {
         page?: number;
         showMissingOnly: boolean;
+        search?: string;
     }) => Promise<void>;
+    handleSearchChange: (value: string) => void;
     handleShowMissingTranslationsOnlyChange: (value: boolean) => void;
     handleToggleDeleteTranslation: (translation?: ITranslation) => () => Promise<void>;
     handleTranslationCreate: () => void;
     isPending: boolean;
     namespaceId: number;
+    searchQuery: string;
     translations: {
         items: ITranslation[];
         pagination: IPagination;

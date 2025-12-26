@@ -371,6 +371,7 @@ const namespaceController = {
     const pageSize = Number(ctx.query.pageSize) || 15;
     const start = (page - 1) * pageSize;
     const projectId = Number(ctx.params.projectId);
+    const search = ctx.query.search ? String(ctx.query.search).trim() : "";
     const knex = strapi.db.connection;
     const locales = await strapi.plugin("i18n").service("locales").find();
     const localeCodes = locales.map((l) => l.code);
@@ -415,6 +416,11 @@ const namespaceController = {
       } else {
         qb.where("n.project_id", projectId);
       }
+      if (search) {
+        qb.where((builder) => {
+          builder.where("n.name", "ilike", `%${search}%`).orWhere("n.description", "ilike", `%${search}%`);
+        });
+      }
     }).leftJoin({ nt: nsTrJoinTable }, `nt.${nsTrJoinCol}`, "n.id").leftJoin({ t: trTable }, "t.id", `nt.${nsTrInvCol}`).groupBy("n.id").orderBy("n.name", "asc").limit(pageSize).offset(start);
     const items = await query;
     const totalQuery = knex({ n: nsTable }).count("* as count").modify((qb) => {
@@ -425,6 +431,11 @@ const namespaceController = {
         );
       } else {
         qb.where("n.project_id", projectId);
+      }
+      if (search) {
+        qb.where((builder) => {
+          builder.where("n.name", "ilike", `%${search}%`).orWhere("n.description", "ilike", `%${search}%`);
+        });
       }
     });
     const total = Number((await totalQuery.first())?.count ?? 0);
@@ -576,6 +587,7 @@ const translationController = {
     const start = (page - 1) * pageSize;
     const namespaceId = Number(ctx.params.namespaceId);
     const showMissingOnly = String(ctx.query.showMissingOnly) === "true";
+    const searchQuery = String(ctx.query.search || "").trim();
     const knex = strapi.db.connection;
     const table = PLUGIN_TRANSLATION_TABLE_NAME;
     const locales = await strapi.plugin("i18n").service("locales").find();
@@ -604,6 +616,16 @@ const translationController = {
       };
       query.andWhere(addMissingClause);
       countQuery.andWhere(addMissingClause);
+    }
+    if (searchQuery) {
+      const addSearchClause = function() {
+        this.where(`t.key`, "like", `%${searchQuery}%`);
+        for (const lang of localeCodes) {
+          this.orWhere(`t.${lang}`, "like", `%${searchQuery}%`);
+        }
+      };
+      query.andWhere(addSearchClause);
+      countQuery.andWhere(addSearchClause);
     }
     const items = await query;
     const total = Number((await countQuery.first())?.count ?? 0);
