@@ -1,4 +1,9 @@
-import { PLUGIN_ID } from '../../../admin/src/pluginId';
+import {
+  PLUGIN_ID,
+  PLUGIN_NAMESPACE_TABLE_NAME,
+  PLUGIN_TRANSLATION_NAMESPACE_LINK_TABLE_NAME,
+  PLUGIN_TRANSLATION_TABLE_NAME,
+} from '../../../admin/src/pluginId';
 
 export default {
   async projectFindProjects(ctx) {
@@ -51,21 +56,46 @@ export default {
     const { projectId } = ctx.params;
 
     try {
-      const namespaces = await strapi.db
-        .query(`plugin::${PLUGIN_ID}.namespace`)
-        .findMany({ where: { project: { documentId: projectId } }, select: ['id', 'documentId'] });
+      const knex = strapi.db.connection;
 
-      const namespaceIds = namespaces.map((ns) => ns.documentId);
+      // Find all namespaces for this project
+      const namespaceIds = await knex(PLUGIN_NAMESPACE_TABLE_NAME)
+        .leftJoin(
+          `${PLUGIN_NAMESPACE_TABLE_NAME.replace(/_namespaces$/, '_namespaces_project_lnk')}`,
+          `${PLUGIN_NAMESPACE_TABLE_NAME}.id`,
+          `${PLUGIN_NAMESPACE_TABLE_NAME.replace(/_namespaces$/, '_namespaces_project_lnk')}.namespace_id`
+        )
+        .leftJoin(
+          `${PLUGIN_NAMESPACE_TABLE_NAME.replace(/_namespaces$/, '_projects')}`,
+          `${PLUGIN_NAMESPACE_TABLE_NAME.replace(/_namespaces$/, '_namespaces_project_lnk')}.project_id`,
+          `${PLUGIN_NAMESPACE_TABLE_NAME.replace(/_namespaces$/, '_projects')}.id`
+        )
+        .where(
+          `${PLUGIN_NAMESPACE_TABLE_NAME.replace(/_namespaces$/, '_projects')}.document_id`,
+          projectId
+        )
+        .pluck(`${PLUGIN_NAMESPACE_TABLE_NAME}.id`);
+
       if (namespaceIds.length > 0) {
-        await strapi.db.query(`plugin::${PLUGIN_ID}.translation`).deleteMany({
-          where: { namespace: { documentId: { $in: namespaceIds } } },
-        });
+        // Get all translation IDs associated with these namespaces
+        const translationIds = await knex(PLUGIN_TRANSLATION_NAMESPACE_LINK_TABLE_NAME)
+          .whereIn('namespace_id', namespaceIds)
+          .pluck('translation_id');
+
+        if (translationIds.length > 0) {
+          // Delete translation-namespace links
+          await knex(PLUGIN_TRANSLATION_NAMESPACE_LINK_TABLE_NAME)
+            .whereIn('namespace_id', namespaceIds)
+            .delete();
+          // Delete translations
+          await knex(PLUGIN_TRANSLATION_TABLE_NAME).whereIn('id', translationIds).delete();
+        }
+
+        // Delete namespaces
+        await knex(PLUGIN_NAMESPACE_TABLE_NAME).whereIn('id', namespaceIds).delete();
       }
 
-      await strapi.db.query(`plugin::${PLUGIN_ID}.namespace`).deleteMany({
-        where: { project: { documentId: projectId } },
-      });
-
+      // Delete the project itself
       await strapi.db
         .query(`plugin::${PLUGIN_ID}.project`)
         .delete({ where: { documentId: projectId } });
