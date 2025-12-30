@@ -4,8 +4,10 @@ declare const _default: {
         path: string;
         handler: string;
         config: {
-            auth: boolean;
             policies: any[];
+            auth: {
+                scope: string[];
+            };
         };
     }[];
 };

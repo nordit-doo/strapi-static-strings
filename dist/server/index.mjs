@@ -42,6 +42,33 @@ const bootstrap = async ({ strapi: strapi2 }) => {
 const destroy = ({ strapi: strapi2 }) => {
 };
 const register = ({ strapi: strapi2 }) => {
+  const actions = [
+    {
+      section: "plugins",
+      displayName: "Read",
+      uid: "read",
+      pluginName: "strapi-static-strings"
+    },
+    {
+      section: "plugins",
+      displayName: "Create",
+      uid: "create",
+      pluginName: "strapi-static-strings"
+    },
+    {
+      section: "plugins",
+      displayName: "Update",
+      uid: "update",
+      pluginName: "strapi-static-strings"
+    },
+    {
+      section: "plugins",
+      displayName: "Delete",
+      uid: "delete",
+      pluginName: "strapi-static-strings"
+    }
+  ];
+  strapi2.admin.services.permission.actionProvider.registerMany(actions);
 };
 const config = {
   default: {},
@@ -882,43 +909,64 @@ const namespace = {
       method: "GET",
       path: "/api/projects/:projectId/namespaces",
       handler: "controller.namespaceFindNamespaces",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/missing-translations",
       handler: "controller.namespaceFindNamespacesWithMissingTranslations",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/all",
       handler: "controller.namespaceFindNamespacesAll",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/:namespaceId",
       handler: "controller.namespaceFindNamespaceById",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "POST",
       path: "/api/projects/:projectId/namespaces",
       handler: "controller.namespaceCreateNamespace",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.create"] }
+      }
     },
     {
       method: "PUT",
       path: "/api/projects/:projectId/namespaces/:namespaceId",
       handler: "controller.namespaceUpdateNamespace",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.update"] }
+      }
     },
     {
       method: "DELETE",
       path: "/api/projects/:projectId/namespaces/:namespaceId",
       handler: "controller.namespaceDeleteNamespace",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.delete"] }
+      }
     }
   ]
 };
@@ -928,31 +976,46 @@ const project = {
       method: "GET",
       path: "/api/projects",
       handler: "controller.projectFindProjects",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "POST",
       path: "/api/projects",
       handler: "controller.projectCreateProject",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.create"] }
+      }
     },
     {
       method: "PUT",
       path: "/api/projects/:projectId",
       handler: "controller.projectUpdateProject",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.update"] }
+      }
     },
     {
       method: "DELETE",
       path: "/api/projects/:projectId",
       handler: "controller.projectDeleteProject",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.delete"] }
+      }
     },
     {
       method: "GET",
       path: "/api/projects/:projectId",
       handler: "controller.projectFindProjectById",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     }
   ]
 };
@@ -984,43 +1047,64 @@ const translation$1 = {
       method: "GET",
       path: "/api/projects/:projectId/translations",
       handler: "controller.translationFindAllProjectTranslations",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/translations/:translationId",
       handler: "controller.translationFindTranslationById",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations",
       handler: "controller.translationFindTranslations",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations/:translationId",
       handler: "controller.translationFindTranslationById",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.read"] }
+      }
     },
     {
       method: "POST",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations",
       handler: "controller.translationCreateTranslation",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.create"] }
+      }
     },
     {
       method: "PUT",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations/:translationId",
       handler: "controller.translationUpdateTranslation",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.update"] }
+      }
     },
     {
       method: "DELETE",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations/:translationId",
       handler: "controller.translationDeleteTranslation",
-      config: { auth: false, policies: [] }
+      config: {
+        policies: [],
+        auth: { scope: ["plugin::strapi-static-strings.delete"] }
+      }
     }
   ]
 };

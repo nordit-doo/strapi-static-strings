@@ -18,10 +18,15 @@ const index = {
         defaultMessage: "Static translations"
       },
       Component: async () => {
-        const App = await import("./App-ByM3_zXz.mjs");
+        const App = await import("./App-CcDAjWzh.mjs");
         return App;
       },
-      permissions: []
+      permissions: [
+        {
+          action: "plugin::strapi-static-strings.read",
+          subject: null
+        }
+      ]
     });
     app.registerPlugin({
       id: PLUGIN_ID,

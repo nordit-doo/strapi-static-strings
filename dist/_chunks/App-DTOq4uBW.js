@@ -1,10 +1,12 @@
-import { jsx, jsxs, Fragment } from "react/jsx-runtime";
-import { useNotification, Page } from "@strapi/strapi/admin";
-import { useParams, useSearchParams, useNavigate, Link as Link$1, Routes, Route } from "react-router-dom";
-import { Modal, Flex, Field, Textarea, Button, Pagination as Pagination$1, PreviousLink, PageLink, Dots, NextLink, Typography, Box, TextInput, Table, Thead, Tr, Th, Tbody, Td, Link, Badge, EmptyStateLayout, Loader, Main, Breadcrumbs, CrumbLink, Crumb, Card, CardBody, CardContent, CardTitle, Divider, Grid, SingleSelect, SingleSelectOption, Switch, DesignSystemProvider, darkTheme } from "@strapi/design-system";
-import { Trash, Plus, Pencil, Cog, Duplicate, Eye } from "@strapi/icons";
-import { useState, useImperativeHandle, forwardRef, useRef, useEffect, useMemo } from "react";
-import { P as PLUGIN_ID } from "./index-DK4yNcxy.mjs";
+"use strict";
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+const jsxRuntime = require("react/jsx-runtime");
+const admin = require("@strapi/strapi/admin");
+const reactRouterDom = require("react-router-dom");
+const designSystem = require("@strapi/design-system");
+const icons = require("@strapi/icons");
+const react = require("react");
+const index = require("./index-NdyQBnL-.js");
 function bind(fn, thisArg) {
   return function wrap() {
     return fn.apply(thisArg, arguments);
@@ -504,10 +506,10 @@ function toFormData$1(obj, formData, options) {
         value = JSON.stringify(value);
       } else if (utils$1.isArray(value) && isFlatArray(value) || (utils$1.isFileList(value) || utils$1.endsWith(key, "[]")) && (arr = utils$1.toArray(value))) {
         key = removeBrackets(key);
-        arr.forEach(function each(el, index) {
+        arr.forEach(function each(el, index2) {
           !(utils$1.isUndefined(el) || el === null) && formData.append(
             // eslint-disable-next-line no-nested-ternary
-            indexes === true ? renderKey([key], index, dots) : indexes === null ? key : key + "[]",
+            indexes === true ? renderKey([key], index2, dots) : indexes === null ? key : key + "[]",
             convertValue(el)
           );
         });
@@ -738,11 +740,11 @@ function arrayToObject(arr) {
   return obj;
 }
 function formDataToJSON(formData) {
-  function buildPath(path, value, target, index) {
-    let name = path[index++];
+  function buildPath(path, value, target, index2) {
+    let name = path[index2++];
     if (name === "__proto__") return true;
     const isNumericKey = Number.isFinite(+name);
-    const isLast = index >= path.length;
+    const isLast = index2 >= path.length;
     name = !name && utils$1.isArray(target) ? target.length : name;
     if (isLast) {
       if (utils$1.hasOwnProp(target, name)) {
@@ -755,7 +757,7 @@ function formDataToJSON(formData) {
     if (!target[name] || !utils$1.isObject(target[name])) {
       target[name] = [];
     }
-    const result = buildPath(path, value, target[name], index);
+    const result = buildPath(path, value, target[name], index2);
     if (result && utils$1.isArray(target[name])) {
       target[name] = arrayToObject(target[name]);
     }
@@ -2223,9 +2225,9 @@ let CancelToken$1 = class CancelToken {
     if (!this._listeners) {
       return;
     }
-    const index = this._listeners.indexOf(listener);
-    if (index !== -1) {
-      this._listeners.splice(index, 1);
+    const index2 = this._listeners.indexOf(listener);
+    if (index2 !== -1) {
+      this._listeners.splice(index2, 1);
     }
   }
   toAbortSignal() {
@@ -2381,7 +2383,7 @@ const createNamespace = async ({
   name,
   description
 }) => {
-  return axios.post(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces`, { name, description }).then((res) => res.data);
+  return axios.post(`/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces`, { name, description }).then((res) => res.data);
 };
 const updateNamespace = async ({
   projectId,
@@ -2389,18 +2391,18 @@ const updateNamespace = async ({
   name,
   description
 }) => {
-  return axios.put(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${id}`, { name, description }).then((res) => res.data);
+  return axios.put(`/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/${id}`, { name, description }).then((res) => res.data);
 };
 const deleteNamespace$1 = async (id) => {
-  return axios.delete(`/${PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
+  return axios.delete(`/${index.PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
 };
 const useHook$8 = ({ projectId, ref, refetch }) => {
-  const [currentNamespace, setCurrentNamespace] = useState(null);
-  const [description, setDescription] = useState("");
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-  const [isLoadingSave, setIsLoadingSave] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [currentNamespace, setCurrentNamespace] = react.useState(null);
+  const [description, setDescription] = react.useState("");
+  const [isLoadingDelete, setIsLoadingDelete] = react.useState(false);
+  const [isLoadingSave, setIsLoadingSave] = react.useState(false);
+  const [isOpen, setIsOpen] = react.useState(false);
+  const [name, setName] = react.useState("");
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -2448,7 +2450,7 @@ const useHook$8 = ({ projectId, ref, refetch }) => {
     }
     setIsLoadingSave(false);
   };
-  useImperativeHandle(ref, () => ({
+  react.useImperativeHandle(ref, () => ({
     open: handleOpenModal
   }));
   return {
@@ -2466,7 +2468,7 @@ const useHook$8 = ({ projectId, ref, refetch }) => {
     name
   };
 };
-const NamespaceCreateEditModal = forwardRef(({ projectId, refetch }, ref) => {
+const NamespaceCreateEditModal = react.forwardRef(({ projectId, refetch }, ref) => {
   const {
     currentNamespace,
     isLoadingDelete,
@@ -2481,33 +2483,33 @@ const NamespaceCreateEditModal = forwardRef(({ projectId, refetch }, ref) => {
     handleOpenChange,
     handleSave
   } = useHook$8({ projectId, ref, refetch });
-  return /* @__PURE__ */ jsx(Modal.Root, { open: isOpen, onOpenChange: handleOpenChange, children: /* @__PURE__ */ jsxs(Modal.Content, { children: [
-    /* @__PURE__ */ jsx(Modal.Header, { children: /* @__PURE__ */ jsx(Modal.Title, { children: "Create namespace" }) }),
-    /* @__PURE__ */ jsx(Modal.Body, { children: /* @__PURE__ */ jsxs(Flex, { flex: "1", direction: "column", gap: "2rem", children: [
-      /* @__PURE__ */ jsxs(Field.Root, { flex: "1", required: true, width: "100%", children: [
-        /* @__PURE__ */ jsx(Field.Label, { children: "Name" }),
-        /* @__PURE__ */ jsx(Field.Input, { value: name, onChange: handleNameChange })
+  return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Root, { open: isOpen, onOpenChange: handleOpenChange, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Content, { children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Header, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Title, { children: "Create namespace" }) }),
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Body, { children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { flex: "1", direction: "column", gap: "2rem", children: [
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Field.Root, { flex: "1", required: true, width: "100%", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Label, { children: "Name" }),
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Input, { value: name, onChange: handleNameChange })
       ] }),
-      /* @__PURE__ */ jsxs(Field.Root, { flex: "1", width: "100%", children: [
-        /* @__PURE__ */ jsx(Field.Label, { children: "Description" }),
-        /* @__PURE__ */ jsx(Textarea, { value: description, onChange: handleDescriptionChange })
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Field.Root, { flex: "1", width: "100%", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Label, { children: "Description" }),
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Textarea, { value: description, onChange: handleDescriptionChange })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxs(Modal.Footer, { children: [
-      !!currentNamespace && /* @__PURE__ */ jsx(
-        Button,
+    /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Footer, { children: [
+      !!currentNamespace && /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.Button,
         {
           color: "white",
           gap: "0",
           loading: isLoadingDelete,
           variant: "secondary",
           onClick: handleDelete,
-          startIcon: /* @__PURE__ */ jsx(Trash, { color: "white" })
+          startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Trash, { color: "white" })
         }
       ),
-      /* @__PURE__ */ jsxs(Flex, { gap: "1rem", children: [
-        /* @__PURE__ */ jsx(Button, { onClick: handleClose, variant: "tertiary", children: "Cancel" }),
-        /* @__PURE__ */ jsx(Button, { loading: isLoadingSave, onClick: handleSave, children: "Save" })
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "1rem", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { onClick: handleClose, variant: "tertiary", children: "Cancel" }),
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { loading: isLoadingSave, onClick: handleSave, children: "Save" })
       ] })
     ] })
   ] }) });
@@ -2519,7 +2521,7 @@ const getNamespaces$2 = async ({
 }) => {
   const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
   return axios(
-    `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/missing-translations?page=${page}${searchParam}`
+    `/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/missing-translations?page=${page}${searchParam}`
   ).then((res) => res.data);
 };
 const deleteNamespace = async ({
@@ -2528,7 +2530,7 @@ const deleteNamespace = async ({
 }) => {
   try {
     const response = await axios.delete(
-      `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}`
+      `/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}`
     );
     return response.data;
   } catch (error) {
@@ -2536,14 +2538,14 @@ const deleteNamespace = async ({
   }
 };
 const useHook$7 = () => {
-  const { projectId } = useParams();
-  const [params, setParams] = useSearchParams();
-  const confirmDeleteModalRef = useRef(null);
-  const namespaceCreatedEditModalRef = useRef(null);
-  const [isPending, setIsPending] = useState(true);
-  const [namespaces, setNamespaces] = useState(null);
-  const [selectedDeleteNamespace, setSelectedDeleteNamespace] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const { projectId } = reactRouterDom.useParams();
+  const [params, setParams] = reactRouterDom.useSearchParams();
+  const confirmDeleteModalRef = react.useRef(null);
+  const namespaceCreatedEditModalRef = react.useRef(null);
+  const [isPending, setIsPending] = react.useState(true);
+  const [namespaces, setNamespaces] = react.useState(null);
+  const [selectedDeleteNamespace, setSelectedDeleteNamespace] = react.useState(null);
+  const [searchQuery, setSearchQuery] = react.useState("");
   const handleEditNamespace = (namespace) => () => {
     namespaceCreatedEditModalRef.current?.open(namespace);
   };
@@ -2595,7 +2597,7 @@ const useHook$7 = () => {
       setIsPending(false);
     }
   };
-  useEffect(() => {
+  react.useEffect(() => {
     if (projectId) {
       const page = Number(params.get("page")) || 1;
       handleRefetch({ page, search: "" });
@@ -2622,7 +2624,7 @@ const Pagination = ({
   pagination: paginationProp,
   onPagePress
 }) => {
-  const pagination = useMemo(() => {
+  const pagination = react.useMemo(() => {
     if (!paginationProp) {
       return null;
     }
@@ -2636,20 +2638,20 @@ const Pagination = ({
     onPagePress(page);
   };
   if (!pagination || pagination.pages.length === 1) {
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   }
   if (pagination.split)
-    return /* @__PURE__ */ jsxs(Pagination$1, { activePage: pagination.page, pageCount: pagination.pages.length, children: [
-      /* @__PURE__ */ jsx(
-        PreviousLink,
+    return /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Pagination, { activePage: pagination.page, pageCount: pagination.pages.length, children: [
+      /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.PreviousLink,
         {
           disabled: pagination.page === 1,
           onClick: handlePagePress(pagination.page - 1),
           children: "Previous"
         }
       ),
-      /* @__PURE__ */ jsxs(
-        PageLink,
+      /* @__PURE__ */ jsxRuntime.jsxs(
+        designSystem.PageLink,
         {
           number: pagination.page <= pagination.pages.length - 4 ? pagination.page : pagination.pages.length - 3,
           onClick: handlePagePress(
@@ -2662,8 +2664,8 @@ const Pagination = ({
           ]
         }
       ),
-      /* @__PURE__ */ jsxs(
-        PageLink,
+      /* @__PURE__ */ jsxRuntime.jsxs(
+        designSystem.PageLink,
         {
           number: pagination.page <= pagination.pages.length - 4 ? pagination.page + 1 : pagination.pages.length - 2,
           onClick: handlePagePress(
@@ -2676,9 +2678,9 @@ const Pagination = ({
           ]
         }
       ),
-      pagination.page <= pagination.pages.length - 4 && /* @__PURE__ */ jsx(Dots, { children: `And ${pagination.pages.length - 4} other links` }),
-      /* @__PURE__ */ jsxs(
-        PageLink,
+      pagination.page <= pagination.pages.length - 4 && /* @__PURE__ */ jsxRuntime.jsx(designSystem.Dots, { children: `And ${pagination.pages.length - 4} other links` }),
+      /* @__PURE__ */ jsxRuntime.jsxs(
+        designSystem.PageLink,
         {
           number: pagination.pages.length - 1,
           onClick: handlePagePress(pagination.pages.length - 1),
@@ -2688,8 +2690,8 @@ const Pagination = ({
           ]
         }
       ),
-      /* @__PURE__ */ jsxs(
-        PageLink,
+      /* @__PURE__ */ jsxRuntime.jsxs(
+        designSystem.PageLink,
         {
           number: pagination.pages.length,
           onClick: handlePagePress(pagination.pages.length),
@@ -2699,11 +2701,11 @@ const Pagination = ({
           ]
         }
       ),
-      /* @__PURE__ */ jsx(NextLink, { onClick: handlePagePress(pagination.page + 1), children: "Next page" })
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.NextLink, { onClick: handlePagePress(pagination.page + 1), children: "Next page" })
     ] });
-  return /* @__PURE__ */ jsxs(Pagination$1, { activePage: pagination.page, pageCount: pagination.pages.length, children: [
-    /* @__PURE__ */ jsx(
-      PreviousLink,
+  return /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Pagination, { activePage: pagination.page, pageCount: pagination.pages.length, children: [
+    /* @__PURE__ */ jsxRuntime.jsx(
+      designSystem.PreviousLink,
       {
         tag: "div",
         disabled: pagination.page - 1 <= 0,
@@ -2711,12 +2713,12 @@ const Pagination = ({
         children: "Previous"
       }
     ),
-    pagination.pages.map((page) => /* @__PURE__ */ jsxs(PageLink, { tag: "a", number: page + 1, onClick: handlePagePress(page + 1), children: [
+    pagination.pages.map((page) => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.PageLink, { tag: "a", number: page + 1, onClick: handlePagePress(page + 1), children: [
       "Go to ",
       page + 1
     ] }, page)),
-    /* @__PURE__ */ jsx(
-      NextLink,
+    /* @__PURE__ */ jsxRuntime.jsx(
+      designSystem.NextLink,
       {
         tag: "div",
         disabled: pagination.page + 1 > pagination.pages.length,
@@ -2727,8 +2729,8 @@ const Pagination = ({
   ] });
 };
 const useHook$6 = ({ onCancel, onConfirm, ref }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoadingConfirm, setIsLoadingConfirm] = useState(false);
+  const [isOpen, setIsOpen] = react.useState(false);
+  const [isLoadingConfirm, setIsLoadingConfirm] = react.useState(false);
   const handleOpen = () => {
     setIsOpen(true);
   };
@@ -2746,7 +2748,7 @@ const useHook$6 = ({ onCancel, onConfirm, ref }) => {
       setIsOpen(false);
     }
   };
-  useImperativeHandle(ref, () => ({
+  react.useImperativeHandle(ref, () => ({
     open: handleOpen
   }));
   return {
@@ -2757,27 +2759,27 @@ const useHook$6 = ({ onCancel, onConfirm, ref }) => {
     handleConfirm
   };
 };
-const ConfirmModal = forwardRef(
+const ConfirmModal = react.forwardRef(
   ({ onCancel, onConfirm, text, title }, ref) => {
     const { handleClose, handleConfirm, isOpen, isLoadingConfirm } = useHook$6({
       onCancel,
       onConfirm,
       ref
     });
-    return /* @__PURE__ */ jsx(Modal.Root, { open: isOpen, onOpenChange: handleClose, children: /* @__PURE__ */ jsxs(Modal.Content, { children: [
-      /* @__PURE__ */ jsx(Modal.Header, { children: /* @__PURE__ */ jsx(Modal.Title, { children: title }) }),
-      /* @__PURE__ */ jsx(Modal.Body, { style: { paddingLeft: "2rem", paddingRight: "1rem" }, children: /* @__PURE__ */ jsx(Typography, { children: text }) }),
-      /* @__PURE__ */ jsx(Modal.Footer, { children: /* @__PURE__ */ jsxs(Flex, { justifyContent: "space-between", alignItems: "center", width: "100%", children: [
-        /* @__PURE__ */ jsx(Flex, { flex: "1" }),
-        /* @__PURE__ */ jsxs(Flex, { gap: "1rem", children: [
-          /* @__PURE__ */ jsx(Button, { onClick: handleClose, variant: "tertiary", children: "Cancel" }),
-          /* @__PURE__ */ jsx(
-            Button,
+    return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Root, { open: isOpen, onOpenChange: handleClose, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Content, { children: [
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Header, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Title, { children: title }) }),
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Body, { style: { paddingLeft: "2rem", paddingRight: "1rem" }, children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { children: text }) }),
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Footer, { children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { justifyContent: "space-between", alignItems: "center", width: "100%", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { flex: "1" }),
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "1rem", children: [
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { onClick: handleClose, variant: "tertiary", children: "Cancel" }),
+          /* @__PURE__ */ jsxRuntime.jsx(
+            designSystem.Button,
             {
               color: "white",
               loading: isLoadingConfirm,
               onClick: handleConfirm,
-              startIcon: /* @__PURE__ */ jsx(Trash, { color: "white" }),
+              startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Trash, { color: "white" }),
               variant: "danger",
               style: { color: "white" },
               children: "Confirm"
@@ -2807,55 +2809,55 @@ const Namespaces = () => {
   } = useHook$7();
   const renderLoader = () => {
     if (isPending && !namespaces?.items.length) {
-      return /* @__PURE__ */ jsx(Box, { children: /* @__PURE__ */ jsx(Loader, {}) });
+      return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Loader, {}) });
     }
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   };
   const renderEmptyState = () => {
     if (!isPending && !namespaces?.items.length) {
-      return /* @__PURE__ */ jsx(Box, { background: "neutral100", children: /* @__PURE__ */ jsx(
-        EmptyStateLayout,
+      return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { background: "neutral100", children: /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.EmptyStateLayout,
         {
           content: "You don't have any namespaces yet.",
-          action: /* @__PURE__ */ jsx(Button, { onClick: handleNamespaceCreate, startIcon: /* @__PURE__ */ jsx(Plus, {}), variant: "secondary", children: "Create your first namespace" })
+          action: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { onClick: handleNamespaceCreate, startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Plus, {}), variant: "secondary", children: "Create your first namespace" })
         }
       ) });
     }
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   };
   const renderContent = () => {
     if (!isPending && !namespaces?.items.length) {
-      return /* @__PURE__ */ jsx(Fragment, {});
+      return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
     }
-    return /* @__PURE__ */ jsxs(Fragment, { children: [
-      !!namespaces?.items?.length && /* @__PURE__ */ jsx(
-        Button,
+    return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+      !!namespaces?.items?.length && /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.Button,
         {
           marginBottom: "1rem",
           onClick: handleNamespaceCreate,
-          startIcon: /* @__PURE__ */ jsx(Plus, {}),
+          startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Plus, {}),
           variant: "secondary",
           children: "Add namespace"
         }
       ),
-      /* @__PURE__ */ jsxs(Box, { paddingTop: "1rem", paddingBottom: "1rem", children: [
-        /* @__PURE__ */ jsxs(Table, { colCount: 3, rowCount: namespaces?.items?.length || 0, children: [
-          /* @__PURE__ */ jsx(Thead, { children: /* @__PURE__ */ jsxs(Tr, { style: { width: "280px" }, children: [
-            /* @__PURE__ */ jsx(Th, { children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Namespace" }) }),
-            /* @__PURE__ */ jsx(Th, { children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Description" }) }),
-            /* @__PURE__ */ jsx(Th, { style: { width: "120px" }, children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Actions" }) })
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Box, { paddingTop: "1rem", paddingBottom: "1rem", children: [
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Table, { colCount: 3, rowCount: namespaces?.items?.length || 0, children: [
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Thead, { children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Tr, { style: { width: "280px" }, children: [
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Namespace" }) }),
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Description" }) }),
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { style: { width: "120px" }, children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Actions" }) })
           ] }) }),
-          /* @__PURE__ */ jsx(Tbody, { children: namespaces?.items?.map((namespace) => /* @__PURE__ */ jsxs(Tr, { children: [
-            /* @__PURE__ */ jsx(Td, { style: { width: "280px" }, children: /* @__PURE__ */ jsx(
-              Link,
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Tbody, { children: namespaces?.items?.map((namespace) => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Tr, { children: [
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { style: { width: "280px" }, children: /* @__PURE__ */ jsxRuntime.jsx(
+              designSystem.Link,
               {
-                href: `/admin/plugins/${PLUGIN_ID}/projects/${projectId}/namespaces/${namespace.id}`,
-                children: /* @__PURE__ */ jsxs(Flex, { gap: 2, paddingTop: "15px", children: [
-                  /* @__PURE__ */ jsx(Typography, { fontWeight: "bold", variant: "omega", style: { color: "white" }, children: namespace.name }),
-                  !!namespace.missingTranslationsCount && /* @__PURE__ */ jsxs(Badge, { backgroundColor: "red", style: { padding: "2px 6px" }, children: [
-                    /* @__PURE__ */ jsx(Typography, { textColor: "white", fontSize: "9px", children: "Missing" }),
-                    /* @__PURE__ */ jsx(
-                      Typography,
+                href: `/admin/plugins/${index.PLUGIN_ID}/projects/${projectId}/namespaces/${namespace.id}`,
+                children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: 2, paddingTop: "15px", children: [
+                  /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { fontWeight: "bold", variant: "omega", style: { color: "white" }, children: namespace.name }),
+                  !!namespace.missingTranslationsCount && /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Badge, { backgroundColor: "red", style: { padding: "2px 6px" }, children: [
+                    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { textColor: "white", fontSize: "9px", children: "Missing" }),
+                    /* @__PURE__ */ jsxRuntime.jsx(
+                      designSystem.Typography,
                       {
                         marginLeft: "4px",
                         fontWeight: "bold",
@@ -2868,36 +2870,36 @@ const Namespaces = () => {
                 ] })
               }
             ) }),
-            /* @__PURE__ */ jsx(Td, { children: /* @__PURE__ */ jsx(Typography, { variant: "omega", children: namespace.description }) }),
-            /* @__PURE__ */ jsx(Td, { style: { width: "120px" }, children: /* @__PURE__ */ jsxs(Flex, { gap: "0.5rem", justifyContent: "flex-end", children: [
-              /* @__PURE__ */ jsx(
-                Button,
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "omega", children: namespace.description }) }),
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { style: { width: "120px" }, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "0.5rem", justifyContent: "flex-end", children: [
+              /* @__PURE__ */ jsxRuntime.jsx(
+                designSystem.Button,
                 {
                   gap: "0",
                   onClick: handleEditNamespace(namespace),
                   variant: "secondary",
-                  startIcon: /* @__PURE__ */ jsx(Pencil, {})
+                  startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Pencil, {})
                 }
               ),
-              /* @__PURE__ */ jsx(
-                Button,
+              /* @__PURE__ */ jsxRuntime.jsx(
+                designSystem.Button,
                 {
                   gap: "0",
                   onClick: handleToggleDeleteNamespace(namespace),
-                  startIcon: /* @__PURE__ */ jsx(Trash, { color: "white" }),
+                  startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Trash, { color: "white" }),
                   variant: "danger"
                 }
               )
             ] }) })
           ] }, namespace.id)) })
         ] }),
-        /* @__PURE__ */ jsx(Flex, { justifyContent: "space-between", paddingTop: "1rem", children: namespaces?.pagination && /* @__PURE__ */ jsx(Pagination, { pagination: namespaces?.pagination, onPagePress: handlePagePress }) })
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { justifyContent: "space-between", paddingTop: "1rem", children: namespaces?.pagination && /* @__PURE__ */ jsxRuntime.jsx(Pagination, { pagination: namespaces?.pagination, onPagePress: handlePagePress }) })
       ] })
     ] });
   };
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(Box, { marginBottom: "2rem", width: "100%", children: /* @__PURE__ */ jsx(
-      TextInput,
+  return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { marginBottom: "2rem", width: "100%", children: /* @__PURE__ */ jsxRuntime.jsx(
+      designSystem.TextInput,
       {
         name: "search",
         placeholder: "Search namespaces by name or description...",
@@ -2908,7 +2910,7 @@ const Namespaces = () => {
     renderContent(),
     renderEmptyState(),
     renderLoader(),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntime.jsx(
       NamespaceCreateEditModal,
       {
         ref: namespaceCreatedEditModalRef,
@@ -2916,7 +2918,7 @@ const Namespaces = () => {
         refetch: handleRefetch
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntime.jsx(
       ConfirmModal,
       {
         ref: confirmDeleteModalRef,
@@ -2928,28 +2930,28 @@ const Namespaces = () => {
     )
   ] });
 };
-const NamespacesPage = () => /* @__PURE__ */ jsxs(Main, { padding: "2rem", children: [
-  /* @__PURE__ */ jsxs(Box, { paddingBottom: "1rem", children: [
-    /* @__PURE__ */ jsx(Flex, { paddingBottom: "0.5rem", gap: "1rem", children: /* @__PURE__ */ jsx(Typography, { variant: "alpha", children: "Static translations" }) }),
-    /* @__PURE__ */ jsxs(Breadcrumbs, { label: "Folder navigatation", children: [
-      /* @__PURE__ */ jsx(CrumbLink, { href: `/admin/plugins/${PLUGIN_ID}`, children: "Projects" }),
-      /* @__PURE__ */ jsx(Crumb, { isCurrent: true, children: "Namespaces" })
+const NamespacesPage = () => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Main, { padding: "2rem", children: [
+  /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Box, { paddingBottom: "1rem", children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { paddingBottom: "0.5rem", gap: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "alpha", children: "Static translations" }) }),
+    /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Breadcrumbs, { label: "Folder navigatation", children: [
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.CrumbLink, { href: `/admin/plugins/${index.PLUGIN_ID}`, children: "Projects" }),
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Crumb, { isCurrent: true, children: "Namespaces" })
     ] })
   ] }),
-  /* @__PURE__ */ jsx(Box, { padding: "1rem", children: /* @__PURE__ */ jsx(Namespaces, {}) })
+  /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { padding: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(Namespaces, {}) })
 ] });
 const getApiKey = async () => {
-  return axios(`/${PLUGIN_ID}/api/settings/api-key`).then((res) => res.data);
+  return axios(`/${index.PLUGIN_ID}/api/settings/api-key`).then((res) => res.data);
 };
 const regenerateApiKey = async () => {
-  const res = await axios.post(`/${PLUGIN_ID}/api/settings/api-key/regenerate`);
+  const res = await axios.post(`/${index.PLUGIN_ID}/api/settings/api-key/regenerate`);
   return res.data;
 };
 const useHook$5 = () => {
-  const { toggleNotification } = useNotification();
-  const [isOpen, setIsOpen] = useState(false);
-  const [apiKey, setApiKey] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { toggleNotification } = admin.useNotification();
+  const [isOpen, setIsOpen] = react.useState(false);
+  const [apiKey, setApiKey] = react.useState(null);
+  const [isLoading, setIsLoading] = react.useState(false);
   const handleFetchApiKey = async () => {
     setIsLoading(true);
     try {
@@ -2998,7 +3000,7 @@ const useHook$5 = () => {
 };
 const SettingsModal = () => {
   const { apiKey, isOpen, isLoading, handleCopy, handleClose, handleOpenChange, handleRegenerate } = useHook$5();
-  const renderRefreshIcon = () => /* @__PURE__ */ jsxs(
+  const renderRefreshIcon = () => /* @__PURE__ */ jsxRuntime.jsxs(
     "svg",
     {
       xmlns: "http://www.w3.org/2000/svg",
@@ -3009,23 +3011,23 @@ const SettingsModal = () => {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx("polyline", { points: "23 4 23 10 17 10" }),
-        /* @__PURE__ */ jsx("polyline", { points: "1 20 1 14 7 14" }),
-        /* @__PURE__ */ jsx("path", { d: "M3.51 9a9 9 0 0114.36-3.36L23 10" }),
-        /* @__PURE__ */ jsx("path", { d: "M20.49 15a9 9 0 01-14.36 3.36L1 14" })
+        /* @__PURE__ */ jsxRuntime.jsx("polyline", { points: "23 4 23 10 17 10" }),
+        /* @__PURE__ */ jsxRuntime.jsx("polyline", { points: "1 20 1 14 7 14" }),
+        /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M3.51 9a9 9 0 0114.36-3.36L23 10" }),
+        /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M20.49 15a9 9 0 01-14.36 3.36L1 14" })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(Button, { variant: "tertiary", onClick: () => handleOpenChange(true), startIcon: /* @__PURE__ */ jsx(Cog, {}), children: "Settings" }),
-    /* @__PURE__ */ jsx(Modal.Root, { open: isOpen, onOpenChange: handleOpenChange, children: /* @__PURE__ */ jsxs(Modal.Content, { children: [
-      /* @__PURE__ */ jsx(Modal.Header, { children: /* @__PURE__ */ jsx(Modal.Title, { children: "API Key" }) }),
-      /* @__PURE__ */ jsx(Modal.Body, { children: /* @__PURE__ */ jsxs(Flex, { direction: "column", gap: "2rem", children: [
-        /* @__PURE__ */ jsx(Typography, { variant: "omega", textColor: "neutral600", children: "You can use this API key to authenticate external translation API calls." }),
-        /* @__PURE__ */ jsxs(Field.Root, { paddingRight: "0", width: "100%", children: [
-          /* @__PURE__ */ jsx(Field.Label, { children: "API Key" }),
-          /* @__PURE__ */ jsxs(
-            Flex,
+  return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { variant: "tertiary", onClick: () => handleOpenChange(true), startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Cog, {}), children: "Settings" }),
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Root, { open: isOpen, onOpenChange: handleOpenChange, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Content, { children: [
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Header, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Title, { children: "API Key" }) }),
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Body, { children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { direction: "column", gap: "2rem", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "omega", textColor: "neutral600", children: "You can use this API key to authenticate external translation API calls." }),
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Field.Root, { paddingRight: "0", width: "100%", children: [
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Label, { children: "API Key" }),
+          /* @__PURE__ */ jsxRuntime.jsxs(
+            designSystem.Flex,
             {
               alignItems: "center",
               background: "neutral100",
@@ -3037,20 +3039,20 @@ const SettingsModal = () => {
               padding: "0.5rem",
               paddingLeft: "1rem",
               children: [
-                /* @__PURE__ */ jsx(Flex, { flex: "1", padding: "0.5rem 1rem", children: /* @__PURE__ */ jsx(Typography, { textColor: "neutral600", fontSize: "sm", children: apiKey || "••••••••••••••••••••••••••••••••••••••••" }) }),
-                /* @__PURE__ */ jsxs(Flex, { gap: "0.5rem", children: [
-                  /* @__PURE__ */ jsx(
-                    Button,
+                /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { flex: "1", padding: "0.5rem 1rem", children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { textColor: "neutral600", fontSize: "sm", children: apiKey || "••••••••••••••••••••••••••••••••••••••••" }) }),
+                /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "0.5rem", children: [
+                  /* @__PURE__ */ jsxRuntime.jsx(
+                    designSystem.Button,
                     {
                       variant: "secondary",
                       onClick: handleCopy,
-                      startIcon: /* @__PURE__ */ jsx(Duplicate, {}),
+                      startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Duplicate, {}),
                       disabled: !apiKey,
                       children: "Copy"
                     }
                   ),
-                  /* @__PURE__ */ jsx(
-                    Button,
+                  /* @__PURE__ */ jsxRuntime.jsx(
+                    designSystem.Button,
                     {
                       variant: "danger",
                       onClick: handleRegenerate,
@@ -3065,7 +3067,7 @@ const SettingsModal = () => {
           )
         ] })
       ] }) }),
-      /* @__PURE__ */ jsx(Modal.Footer, { children: /* @__PURE__ */ jsx(Flex, { justifyContent: "flex-end", gap: "1rem", children: /* @__PURE__ */ jsx(Button, { variant: "tertiary", onClick: handleClose, children: "Close" }) }) })
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Footer, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { justifyContent: "flex-end", gap: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { variant: "tertiary", onClick: handleClose, children: "Close" }) }) })
     ] }) })
   ] });
 };
@@ -3075,12 +3077,12 @@ const ProjectCard = ({
   onDelete,
   onViewAllTranslations,
   project
-}) => /* @__PURE__ */ jsxs(Card, { height: "100%", width: "100%", children: [
-  /* @__PURE__ */ jsx(CardBody, { minHeight: "100px", width: "320px", children: /* @__PURE__ */ jsxs(CardContent, { children: [
-    /* @__PURE__ */ jsx(CardTitle, { variant: "beta", fontWeight: "bold", marginTop: "0.4rem", children: project.name }),
-    /* @__PURE__ */ jsx(Divider, { background: "neutral200", marginTop: "0.5rem", marginBottom: "0.5rem", width: "100%" }),
-    /* @__PURE__ */ jsxs(
-      Flex,
+}) => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Card, { height: "100%", width: "100%", children: [
+  /* @__PURE__ */ jsxRuntime.jsx(designSystem.CardBody, { minHeight: "100px", width: "320px", children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.CardContent, { children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.CardTitle, { variant: "beta", fontWeight: "bold", marginTop: "0.4rem", children: project.name }),
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Divider, { background: "neutral200", marginTop: "0.5rem", marginBottom: "0.5rem", width: "100%" }),
+    /* @__PURE__ */ jsxRuntime.jsxs(
+      designSystem.Flex,
       {
         gap: 1,
         onClick: onClipboardCopy(project),
@@ -3088,55 +3090,55 @@ const ProjectCard = ({
         marginTop: "0.5rem",
         style: { opacity: 0.8, wordBreak: "break-all" },
         children: [
-          /* @__PURE__ */ jsx(Duplicate, {}),
-          /* @__PURE__ */ jsx(Typography, { fontSize: "1rem", children: project.documentId })
+          /* @__PURE__ */ jsxRuntime.jsx(icons.Duplicate, {}),
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { fontSize: "1rem", children: project.documentId })
         ]
       }
     ),
-    /* @__PURE__ */ jsx(Box, { paddingTop: "1rem", paddingBottom: "1rem", style: { display: "flex", flex: 1 }, children: /* @__PURE__ */ jsx(Typography, { flex: "1", variant: "omega", style: { wordBreak: "break-word" }, children: project.description }) })
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { paddingTop: "1rem", paddingBottom: "1rem", style: { display: "flex", flex: 1 }, children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { flex: "1", variant: "omega", style: { wordBreak: "break-word" }, children: project.description }) })
   ] }) }),
-  /* @__PURE__ */ jsxs(Flex, { display: "flex", gap: "15rem", justifyContent: "flex-start", padding: "1rem", width: "100%", children: [
-    /* @__PURE__ */ jsx(Flex, { display: "flex", children: /* @__PURE__ */ jsx(
-      Button,
+  /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { display: "flex", gap: "15rem", justifyContent: "flex-start", padding: "1rem", width: "100%", children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { display: "flex", children: /* @__PURE__ */ jsxRuntime.jsx(
+      designSystem.Button,
       {
         color: "white",
         gap: "0",
         onClick: onViewAllTranslations(project),
-        startIcon: /* @__PURE__ */ jsx(Eye, { color: "white" }),
+        startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Eye, { color: "white" }),
         title: "View all translations"
       }
     ) }),
-    /* @__PURE__ */ jsxs(Flex, { display: "flex", gap: "0.5rem", justifyContent: "flex-end", children: [
-      /* @__PURE__ */ jsx(
-        Button,
+    /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { display: "flex", gap: "0.5rem", justifyContent: "flex-end", children: [
+      /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.Button,
         {
           color: "white",
           gap: "0",
           variant: "secondary",
           onClick: onDelete(project),
-          startIcon: /* @__PURE__ */ jsx(Trash, { color: "white" })
+          startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Trash, { color: "white" })
         }
       ),
-      /* @__PURE__ */ jsx(Button, { gap: "0", onClick: onEdit(project), startIcon: /* @__PURE__ */ jsx(Pencil, { color: "white" }) })
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { gap: "0", onClick: onEdit(project), startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Pencil, { color: "white" }) })
     ] })
   ] })
 ] });
 const createProject = async ({ name, description }) => {
-  return axios.post(`/${PLUGIN_ID}/api/projects`, { name, description }).then((res) => res.data);
+  return axios.post(`/${index.PLUGIN_ID}/api/projects`, { name, description }).then((res) => res.data);
 };
 const updateProject = async ({ id, name, description }) => {
-  return axios.put(`/${PLUGIN_ID}/api/projects/${id}`, { name, description }).then((res) => res.data);
+  return axios.put(`/${index.PLUGIN_ID}/api/projects/${id}`, { name, description }).then((res) => res.data);
 };
 const deleteProject$1 = async (id) => {
-  return axios.delete(`/${PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
+  return axios.delete(`/${index.PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
 };
 const useHook$4 = ({ ref, refetch }) => {
-  const [currentProject, setCurrentProject] = useState(null);
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-  const [isLoadingSave, setIsLoadingSave] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [currentProject, setCurrentProject] = react.useState(null);
+  const [isLoadingDelete, setIsLoadingDelete] = react.useState(false);
+  const [isLoadingSave, setIsLoadingSave] = react.useState(false);
+  const [isOpen, setIsOpen] = react.useState(false);
+  const [name, setName] = react.useState("");
+  const [description, setDescription] = react.useState("");
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -3180,7 +3182,7 @@ const useHook$4 = ({ ref, refetch }) => {
     refetch();
     setIsLoadingSave(false);
   };
-  useImperativeHandle(ref, () => ({
+  react.useImperativeHandle(ref, () => ({
     open: handleOpenModal
   }));
   return {
@@ -3198,7 +3200,7 @@ const useHook$4 = ({ ref, refetch }) => {
     name
   };
 };
-const ProjectCreateEditModal = forwardRef(({ refetch }, ref) => {
+const ProjectCreateEditModal = react.forwardRef(({ refetch }, ref) => {
   const {
     currentProject,
     isLoadingDelete,
@@ -3213,53 +3215,53 @@ const ProjectCreateEditModal = forwardRef(({ refetch }, ref) => {
     handleOpenChange,
     handleSave
   } = useHook$4({ ref, refetch });
-  return /* @__PURE__ */ jsx(Modal.Root, { open: isOpen, onOpenChange: handleOpenChange, children: /* @__PURE__ */ jsxs(Modal.Content, { children: [
-    /* @__PURE__ */ jsx(Modal.Header, { children: /* @__PURE__ */ jsx(Modal.Title, { children: "Create project" }) }),
-    /* @__PURE__ */ jsx(Modal.Body, { children: /* @__PURE__ */ jsxs(Flex, { flex: "1", direction: "column", gap: "2rem", children: [
-      /* @__PURE__ */ jsxs(Field.Root, { flex: "1", required: true, width: "100%", children: [
-        /* @__PURE__ */ jsx(Field.Label, { children: "Name" }),
-        /* @__PURE__ */ jsx(Field.Input, { value: name, onChange: handleNameChange })
+  return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Root, { open: isOpen, onOpenChange: handleOpenChange, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Content, { children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Header, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Title, { children: "Create project" }) }),
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Body, { children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { flex: "1", direction: "column", gap: "2rem", children: [
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Field.Root, { flex: "1", required: true, width: "100%", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Label, { children: "Name" }),
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Input, { value: name, onChange: handleNameChange })
       ] }),
-      /* @__PURE__ */ jsxs(Field.Root, { flex: "1", width: "100%", children: [
-        /* @__PURE__ */ jsx(Field.Label, { children: "Description" }),
-        /* @__PURE__ */ jsx(Textarea, { value: description, onChange: handleDescriptionChange })
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Field.Root, { flex: "1", width: "100%", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Label, { children: "Description" }),
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Textarea, { value: description, onChange: handleDescriptionChange })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxs(Modal.Footer, { children: [
-      !!currentProject && /* @__PURE__ */ jsx(
-        Button,
+    /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Footer, { children: [
+      !!currentProject && /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.Button,
         {
           color: "white",
           gap: "0",
           loading: isLoadingDelete,
           variant: "secondary",
           onClick: handleDelete,
-          startIcon: /* @__PURE__ */ jsx(Trash, { color: "white" })
+          startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Trash, { color: "white" })
         }
       ),
-      /* @__PURE__ */ jsxs(Flex, { gap: "1rem", children: [
-        /* @__PURE__ */ jsx(Button, { onClick: handleClose, variant: "tertiary", children: "Cancel" }),
-        /* @__PURE__ */ jsx(Button, { loading: isLoadingSave, onClick: handleSave, children: "Save" })
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "1rem", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { onClick: handleClose, variant: "tertiary", children: "Cancel" }),
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { loading: isLoadingSave, onClick: handleSave, children: "Save" })
       ] })
     ] })
   ] }) });
 });
 const getNamespaces$1 = async () => {
-  return axios(`/${PLUGIN_ID}/api/projects`).then((res) => res.data);
+  return axios(`/${index.PLUGIN_ID}/api/projects`).then((res) => res.data);
 };
 const deleteProject = async (id) => {
-  return axios.delete(`/${PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
+  return axios.delete(`/${index.PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
 };
 const useHook$3 = () => {
-  const { toggleNotification } = useNotification();
-  const navigate = useNavigate();
-  const confirmDeleteModalRef = useRef(null);
-  const projectCreatedEditModalRef = useRef(null);
-  const [isPending, setIsPending] = useState(true);
-  const [projects, setProjects] = useState(
+  const { toggleNotification } = admin.useNotification();
+  const navigate = reactRouterDom.useNavigate();
+  const confirmDeleteModalRef = react.useRef(null);
+  const projectCreatedEditModalRef = react.useRef(null);
+  const [isPending, setIsPending] = react.useState(true);
+  const [projects, setProjects] = react.useState(
     null
   );
-  const [selectedDeleteProject, setSelectedDeleteProject] = useState(null);
+  const [selectedDeleteProject, setSelectedDeleteProject] = react.useState(null);
   const handleClipboardCopy = (project) => (e) => {
     e.preventDefault();
     navigator.clipboard.writeText(project.documentId);
@@ -3274,7 +3276,7 @@ const useHook$3 = () => {
   };
   const handleViewAllTranslations = (project) => (e) => {
     e.preventDefault();
-    navigate(`/plugins/${PLUGIN_ID}/projects/${project.id}/translations`);
+    navigate(`/plugins/${index.PLUGIN_ID}/projects/${project.id}/translations`);
   };
   const handleToggleDelete = (project) => async (e) => {
     e.preventDefault();
@@ -3315,7 +3317,7 @@ const useHook$3 = () => {
     setProjects(data);
     setIsPending(false);
   };
-  useEffect(() => {
+  react.useEffect(() => {
     handleRefetch();
   }, []);
   return {
@@ -3350,43 +3352,43 @@ const ProjectsList = () => {
   } = useHook$3();
   const renderLoader = () => {
     if (isPending && !projects?.items.length) {
-      return /* @__PURE__ */ jsx(Box, { children: /* @__PURE__ */ jsx(Loader, {}) });
+      return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Loader, {}) });
     }
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   };
   const renderEmptyState = () => {
     if (!isPending && !projects?.items.length) {
-      return /* @__PURE__ */ jsx(Box, { background: "neutral100", children: /* @__PURE__ */ jsx(
-        EmptyStateLayout,
+      return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { background: "neutral100", children: /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.EmptyStateLayout,
         {
           content: "You don't have any projects yet.",
-          action: /* @__PURE__ */ jsx(Button, { onClick: handleProjectCreate, startIcon: /* @__PURE__ */ jsx(Plus, {}), variant: "secondary", children: "Create your first project" })
+          action: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { onClick: handleProjectCreate, startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Plus, {}), variant: "secondary", children: "Create your first project" })
         }
       ) });
     }
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   };
   const renderContent = () => {
     if (!isPending && !projects?.items.length) {
-      return /* @__PURE__ */ jsx(Fragment, {});
+      return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
     }
-    return /* @__PURE__ */ jsxs(Fragment, { children: [
-      !!projects?.items?.length && /* @__PURE__ */ jsx(
-        Button,
+    return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+      !!projects?.items?.length && /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.Button,
         {
           marginBottom: "1rem",
           onClick: handleProjectCreate,
-          startIcon: /* @__PURE__ */ jsx(Plus, {}),
+          startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Plus, {}),
           variant: "secondary",
           children: "Add project"
         }
       ),
-      /* @__PURE__ */ jsx(Grid.Root, { gap: 2, children: projects?.items.map((project) => /* @__PURE__ */ jsx(
-        Link$1,
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Grid.Root, { gap: 2, children: projects?.items.map((project) => /* @__PURE__ */ jsxRuntime.jsx(
+        reactRouterDom.Link,
         {
-          to: `/plugins/${PLUGIN_ID}/projects/${project.id}`,
+          to: `/plugins/${index.PLUGIN_ID}/projects/${project.id}`,
           style: { color: "white", textDecoration: "none" },
-          children: /* @__PURE__ */ jsx(Grid.Item, { id: project.id, background: "primary100", height: "100%", children: /* @__PURE__ */ jsx(
+          children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Grid.Item, { id: project.id, background: "primary100", height: "100%", children: /* @__PURE__ */ jsxRuntime.jsx(
             ProjectCard,
             {
               onClipboardCopy: handleClipboardCopy,
@@ -3401,12 +3403,12 @@ const ProjectsList = () => {
       )) })
     ] });
   };
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
+  return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
     renderContent(),
     renderEmptyState(),
     renderLoader(),
-    /* @__PURE__ */ jsx(ProjectCreateEditModal, { ref: projectCreatedEditModalRef, refetch: handleRefetch }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntime.jsx(ProjectCreateEditModal, { ref: projectCreatedEditModalRef, refetch: handleRefetch }),
+    /* @__PURE__ */ jsxRuntime.jsx(
       ConfirmModal,
       {
         ref: confirmDeleteModalRef,
@@ -3417,21 +3419,21 @@ const ProjectsList = () => {
     )
   ] });
 };
-const ProjectsPage = () => /* @__PURE__ */ jsxs(Main, { padding: "2rem", children: [
-  /* @__PURE__ */ jsxs(Box, { paddingBottom: "1rem", children: [
-    /* @__PURE__ */ jsxs(Flex, { paddingBottom: "0.5rem", gap: "1rem", children: [
-      /* @__PURE__ */ jsx(Typography, { variant: "alpha", children: "Static translations" }),
-      /* @__PURE__ */ jsx(SettingsModal, {})
+const ProjectsPage = () => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Main, { padding: "2rem", children: [
+  /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Box, { paddingBottom: "1rem", children: [
+    /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { paddingBottom: "0.5rem", gap: "1rem", children: [
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "alpha", children: "Static translations" }),
+      /* @__PURE__ */ jsxRuntime.jsx(SettingsModal, {})
     ] }),
-    /* @__PURE__ */ jsx(Breadcrumbs, { label: "Folder navigatation", children: /* @__PURE__ */ jsx(Crumb, { isCurrent: true, children: "Projects" }) })
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Breadcrumbs, { label: "Folder navigatation", children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Crumb, { isCurrent: true, children: "Projects" }) })
   ] }),
-  /* @__PURE__ */ jsx(Box, { padding: "1rem", children: /* @__PURE__ */ jsx(ProjectsList, {}) })
+  /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { padding: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(ProjectsList, {}) })
 ] });
 const getNamespaces = async (projectId) => {
-  return axios(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces/all`).then((res) => res.data);
+  return axios(`/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/all`).then((res) => res.data);
 };
 const useNamespaces = ({ projectId }) => {
-  const [namespaces, setNamespaces] = useState([]);
+  const [namespaces, setNamespaces] = react.useState([]);
   const refetchNamespaces = async () => {
     if (!projectId) {
       return;
@@ -3439,7 +3441,7 @@ const useNamespaces = ({ projectId }) => {
     const data = await getNamespaces(projectId);
     setNamespaces(data);
   };
-  useEffect(() => {
+  react.useEffect(() => {
     refetchNamespaces();
   }, []);
   return { namespaces };
@@ -3448,12 +3450,12 @@ const getLocales = async () => {
   return axios.get(`/api/i18n/locales`).then((res) => res.data);
 };
 const useLocales = () => {
-  const [locales, setLocales] = useState([]);
+  const [locales, setLocales] = react.useState([]);
   const refetchLocales = async () => {
     const data = await getLocales();
     setLocales(data);
   };
-  useEffect(() => {
+  react.useEffect(() => {
     refetchLocales();
   }, []);
   return { locales };
@@ -3467,7 +3469,7 @@ const getTranslation = async ({
 }) => {
   const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
   return axios.get(
-    `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
+    `/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
   ).then((res) => res.data);
 };
 const createTranslation = async ({
@@ -3478,7 +3480,7 @@ const createTranslation = async ({
 }) => {
   try {
     const response = await axios.post(
-      `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations`,
+      `/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations`,
       {
         key,
         translations
@@ -3499,7 +3501,7 @@ const updateTranslation = async ({
 }) => {
   try {
     const response = await axios.put(
-      `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${id}`,
+      `/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${id}`,
       {
         key,
         translations
@@ -3518,7 +3520,7 @@ const deleteTranslation$1 = async ({
 }) => {
   try {
     const response = await axios.delete(
-      `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${translationId}`
+      `/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${translationId}`
     );
     return response.data;
   } catch (error) {
@@ -3526,13 +3528,13 @@ const deleteTranslation$1 = async ({
   }
 };
 const useHook$2 = ({ namespaceId, projectId, ref, refetch }) => {
-  const [currentTranslation, setCurrentTranslation] = useState(null);
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-  const [isLoadingSave, setIsLoadingSave] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [key, setKey] = useState("");
-  const [selectedNamespaceId, setSelectedNamespaceId] = useState(namespaceId);
-  const [translations, setTranslations] = useState({});
+  const [currentTranslation, setCurrentTranslation] = react.useState(null);
+  const [isLoadingDelete, setIsLoadingDelete] = react.useState(false);
+  const [isLoadingSave, setIsLoadingSave] = react.useState(false);
+  const [isOpen, setIsOpen] = react.useState(false);
+  const [key, setKey] = react.useState("");
+  const [selectedNamespaceId, setSelectedNamespaceId] = react.useState(namespaceId);
+  const [translations, setTranslations] = react.useState({});
   const { locales } = useLocales();
   const { namespaces } = useNamespaces({ projectId });
   const handleClose = () => {
@@ -3623,7 +3625,7 @@ const useHook$2 = ({ namespaceId, projectId, ref, refetch }) => {
     }
     setIsLoadingSave(false);
   };
-  useEffect(() => {
+  react.useEffect(() => {
     if (locales) {
       setTranslations((prev) => {
         const updated = { ...prev };
@@ -3637,7 +3639,7 @@ const useHook$2 = ({ namespaceId, projectId, ref, refetch }) => {
       });
     }
   }, [currentTranslation]);
-  useImperativeHandle(ref, () => ({
+  react.useImperativeHandle(ref, () => ({
     open: handleOpenModal
   }));
   return {
@@ -3659,7 +3661,7 @@ const useHook$2 = ({ namespaceId, projectId, ref, refetch }) => {
     selectedNamespaceId
   };
 };
-const TranslationCreateEditModal = forwardRef(
+const TranslationCreateEditModal = react.forwardRef(
   ({ namespaceId, projectId, refetch }, ref) => {
     const {
       currentTranslation,
@@ -3679,33 +3681,33 @@ const TranslationCreateEditModal = forwardRef(
       selectedNamespaceId,
       translations
     } = useHook$2({ namespaceId, projectId, ref, refetch });
-    return /* @__PURE__ */ jsx(Modal.Root, { open: isOpen, onOpenChange: handleOpenChange, children: /* @__PURE__ */ jsxs(Modal.Content, { children: [
-      /* @__PURE__ */ jsx(Modal.Header, { children: /* @__PURE__ */ jsx(Modal.Title, { children: "Create namespace" }) }),
-      /* @__PURE__ */ jsxs(Modal.Body, { children: [
-        /* @__PURE__ */ jsxs(Flex, { flex: "1", direction: "column", gap: "2rem", children: [
-          /* @__PURE__ */ jsxs(Field.Root, { flex: "1", required: true, width: "100%", children: [
-            /* @__PURE__ */ jsx(Field.Label, { children: "Namespace" }),
-            /* @__PURE__ */ jsx(
-              SingleSelect,
+    return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Root, { open: isOpen, onOpenChange: handleOpenChange, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Content, { children: [
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Header, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Modal.Title, { children: "Create namespace" }) }),
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Body, { children: [
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { flex: "1", direction: "column", gap: "2rem", children: [
+          /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Field.Root, { flex: "1", required: true, width: "100%", children: [
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Label, { children: "Namespace" }),
+            /* @__PURE__ */ jsxRuntime.jsx(
+              designSystem.SingleSelect,
               {
                 required: true,
                 onChange: handleNamespaceChange,
                 placeholder: "Select namespace",
                 value: selectedNamespaceId,
-                children: namespaces.map((ns) => /* @__PURE__ */ jsx(SingleSelectOption, { value: ns.id, children: ns.name }, ns.id))
+                children: namespaces.map((ns) => /* @__PURE__ */ jsxRuntime.jsx(designSystem.SingleSelectOption, { value: ns.id, children: ns.name }, ns.id))
               }
             )
           ] }),
-          /* @__PURE__ */ jsxs(Field.Root, { flex: "1", required: true, width: "100%", children: [
-            /* @__PURE__ */ jsx(Field.Label, { children: "Key" }),
-            /* @__PURE__ */ jsx(Field.Input, { onChange: handleKeyChange, value: key })
+          /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Field.Root, { flex: "1", required: true, width: "100%", children: [
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Label, { children: "Key" }),
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Input, { onChange: handleKeyChange, value: key })
           ] })
         ] }),
-        /* @__PURE__ */ jsx(Divider, { marginTop: "2rem", marginBottom: "2rem" }),
-        locales.map((locale) => /* @__PURE__ */ jsxs(Field.Root, { marginBottom: "1.5rem", required: locale.code === "en", children: [
-          /* @__PURE__ */ jsx(Field.Label, { children: locale.name }),
-          /* @__PURE__ */ jsx(
-            Textarea,
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Divider, { marginTop: "2rem", marginBottom: "2rem" }),
+        locales.map((locale) => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Field.Root, { marginBottom: "1.5rem", required: locale.code === "en", children: [
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Field.Label, { children: locale.name }),
+          /* @__PURE__ */ jsxRuntime.jsx(
+            designSystem.Textarea,
             {
               onChange: handleTranslationsChange(locale.code),
               rows: 4,
@@ -3714,42 +3716,42 @@ const TranslationCreateEditModal = forwardRef(
           )
         ] }, locale.code))
       ] }),
-      /* @__PURE__ */ jsxs(Modal.Footer, { children: [
-        !!currentTranslation && /* @__PURE__ */ jsx(
-          Button,
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Modal.Footer, { children: [
+        !!currentTranslation && /* @__PURE__ */ jsxRuntime.jsx(
+          designSystem.Button,
           {
             color: "white",
             gap: "0",
             loading: isLoadingDelete,
             variant: "secondary",
             onClick: handleDelete,
-            startIcon: /* @__PURE__ */ jsx(Trash, { color: "white" })
+            startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Trash, { color: "white" })
           }
         ),
-        /* @__PURE__ */ jsxs(Flex, { gap: "1rem", children: [
-          /* @__PURE__ */ jsx(Button, { onClick: handleClose, variant: "tertiary", children: "Cancel" }),
-          /* @__PURE__ */ jsx(Button, { loading: isLoadingSave, onClick: handleSave, children: "Save" })
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "1rem", children: [
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { onClick: handleClose, variant: "tertiary", children: "Cancel" }),
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { loading: isLoadingSave, onClick: handleSave, children: "Save" })
         ] })
       ] })
     ] }) });
   }
 );
 const useHook$1 = () => {
-  const params = useParams();
+  const params = reactRouterDom.useParams();
   const namespaceId = Number(params.namespaceId);
   const projectId = Number(params.projectId);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const confirmDeleteModalRef = useRef(null);
-  const translationCreatedEditModalRef = useRef(
+  const [searchParams, setSearchParams] = reactRouterDom.useSearchParams();
+  const confirmDeleteModalRef = react.useRef(null);
+  const translationCreatedEditModalRef = react.useRef(
     null
   );
-  const [selectedDeleteTranslation, setSelectedDeleteTranslation] = useState(
+  const [selectedDeleteTranslation, setSelectedDeleteTranslation] = react.useState(
     null
   );
-  const [isPending, setIsPending] = useState(true);
-  const [translations, setTranslations] = useState(null);
-  const [showMissingTranslationsOnly, setShowMissingTranslationsOnly] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isPending, setIsPending] = react.useState(true);
+  const [translations, setTranslations] = react.useState(null);
+  const [showMissingTranslationsOnly, setShowMissingTranslationsOnly] = react.useState(false);
+  const [searchQuery, setSearchQuery] = react.useState("");
   const handleEditTranslation = (translation) => () => {
     translationCreatedEditModalRef.current?.open(translation);
   };
@@ -3821,7 +3823,7 @@ const useHook$1 = () => {
     setShowMissingTranslationsOnly(value);
     handleRefetch({ page: 1, showMissingOnly: value, search: searchQuery });
   };
-  useEffect(() => {
+  react.useEffect(() => {
     if (projectId) {
       handleRefetch({ page: 1, showMissingOnly: showMissingTranslationsOnly, search: "" });
     }
@@ -3869,31 +3871,31 @@ const Translations = () => {
   } = useHook$1();
   const renderLoader = () => {
     if (isPending && !translations?.items.length) {
-      return /* @__PURE__ */ jsx(Box, { children: /* @__PURE__ */ jsx(Loader, {}) });
+      return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Loader, {}) });
     }
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   };
   const renderEmptyState = () => {
     if (!isPending && !translations?.items.length) {
-      return /* @__PURE__ */ jsx(Box, { background: "neutral100", children: /* @__PURE__ */ jsx(
-        EmptyStateLayout,
+      return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { background: "neutral100", children: /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.EmptyStateLayout,
         {
           content: "You don't have any translations yet.",
-          action: /* @__PURE__ */ jsx(Button, { onClick: handleTranslationCreate, startIcon: /* @__PURE__ */ jsx(Plus, {}), variant: "secondary", children: "Create your first translation" })
+          action: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { onClick: handleTranslationCreate, startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Plus, {}), variant: "secondary", children: "Create your first translation" })
         }
       ) });
     }
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   };
   const renderContent = () => {
     if (!isPending && !translations?.items.length) {
-      return /* @__PURE__ */ jsx(Fragment, {});
+      return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
     }
-    return /* @__PURE__ */ jsxs(Fragment, { children: [
-      !!translations?.items?.length && /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs(Flex, { marginBottom: "1rem", gap: "1rem", children: [
-        /* @__PURE__ */ jsx(Button, { onClick: handleTranslationCreate, startIcon: /* @__PURE__ */ jsx(Plus, {}), variant: "secondary", children: "Add translation" }),
-        /* @__PURE__ */ jsx(
-          Switch,
+    return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+      !!translations?.items?.length && /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { marginBottom: "1rem", gap: "1rem", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Button, { onClick: handleTranslationCreate, startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Plus, {}), variant: "secondary", children: "Add translation" }),
+        /* @__PURE__ */ jsxRuntime.jsx(
+          designSystem.Switch,
           {
             checked: showMissingTranslationsOnly,
             name: "showMissingTranslationsOnly",
@@ -3904,21 +3906,21 @@ const Translations = () => {
           }
         )
       ] }) }),
-      /* @__PURE__ */ jsxs(Box, { paddingTop: "1rem", paddingBottom: "1rem", children: [
-        /* @__PURE__ */ jsxs(Table, { colCount: 3, rowCount: translations?.items?.length || 0, children: [
-          /* @__PURE__ */ jsx(Thead, { children: /* @__PURE__ */ jsxs(Tr, { style: { width: "280px" }, children: [
-            /* @__PURE__ */ jsx(Th, { children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Key" }) }),
-            /* @__PURE__ */ jsx(Th, { children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Translations" }) }),
-            /* @__PURE__ */ jsx(Th, { style: { width: "120px" }, children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Actions" }) })
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Box, { paddingTop: "1rem", paddingBottom: "1rem", children: [
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Table, { colCount: 3, rowCount: translations?.items?.length || 0, children: [
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Thead, { children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Tr, { style: { width: "280px" }, children: [
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Key" }) }),
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Translations" }) }),
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { style: { width: "120px" }, children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Actions" }) })
           ] }) }),
-          /* @__PURE__ */ jsx(Tbody, { children: translations?.items?.map((translation) => {
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Tbody, { children: translations?.items?.map((translation) => {
             const isMissing = Object.values(locales).some(
               (locale) => !translation[locale.code]
             );
-            return /* @__PURE__ */ jsxs(Tr, { children: [
-              /* @__PURE__ */ jsx(Td, { style: { width: "280px", verticalAlign: "top" }, children: /* @__PURE__ */ jsxs(Flex, { gap: 2, paddingTop: "15px", children: [
-                /* @__PURE__ */ jsx(
-                  Typography,
+            return /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Tr, { children: [
+              /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { style: { width: "280px", verticalAlign: "top" }, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: 2, paddingTop: "15px", children: [
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  designSystem.Typography,
                   {
                     cursor: "pointer",
                     fontWeight: "bold",
@@ -3927,10 +3929,10 @@ const Translations = () => {
                     children: translation.key
                   }
                 ),
-                isMissing && /* @__PURE__ */ jsx(Badge, { backgroundColor: "red", style: { padding: "2px 6px" }, children: /* @__PURE__ */ jsx(Typography, { fontWeight: "bold", textColor: "white", fontSize: "9px", children: "Missing" }) })
+                isMissing && /* @__PURE__ */ jsxRuntime.jsx(designSystem.Badge, { backgroundColor: "red", style: { padding: "2px 6px" }, children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { fontWeight: "bold", textColor: "white", fontSize: "9px", children: "Missing" }) })
               ] }) }),
-              /* @__PURE__ */ jsx(
-                Td,
+              /* @__PURE__ */ jsxRuntime.jsx(
+                designSystem.Td,
                 {
                   style: {
                     paddingTop: "10px",
@@ -3938,9 +3940,9 @@ const Translations = () => {
                     whiteSpace: "normal",
                     wordBreak: "break-word"
                   },
-                  children: locales.map((locale) => /* @__PURE__ */ jsxs(Flex, { marginRight: 1, padding: 1, alignItems: "flex-start", children: [
-                    /* @__PURE__ */ jsx(Box, { display: "flex", children: /* @__PURE__ */ jsxs(
-                      Typography,
+                  children: locales.map((locale) => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { marginRight: 1, padding: 1, alignItems: "flex-start", children: [
+                    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { display: "flex", children: /* @__PURE__ */ jsxRuntime.jsxs(
+                      designSystem.Typography,
                       {
                         lineHeight: "14px",
                         fontWeight: "bold",
@@ -3953,26 +3955,26 @@ const Translations = () => {
                         ]
                       }
                     ) }),
-                    /* @__PURE__ */ jsx(Typography, { lineHeight: "16px", variant: "omega", children: translation[locale.code] || "-" })
+                    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { lineHeight: "16px", variant: "omega", children: translation[locale.code] || "-" })
                   ] }, locale.code))
                 }
               ),
-              /* @__PURE__ */ jsx(Td, { style: { width: "120px" }, children: /* @__PURE__ */ jsxs(Flex, { gap: "0.5rem", justifyContent: "flex-end", children: [
-                /* @__PURE__ */ jsx(
-                  Button,
+              /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { style: { width: "120px" }, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "0.5rem", justifyContent: "flex-end", children: [
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  designSystem.Button,
                   {
                     gap: "0",
                     onClick: handleEditTranslation(translation),
                     variant: "secondary",
-                    startIcon: /* @__PURE__ */ jsx(Pencil, {})
+                    startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Pencil, {})
                   }
                 ),
-                /* @__PURE__ */ jsx(
-                  Button,
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  designSystem.Button,
                   {
                     gap: "0",
                     onClick: handleToggleDeleteTranslation(translation),
-                    startIcon: /* @__PURE__ */ jsx(Trash, { color: "white" }),
+                    startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Trash, { color: "white" }),
                     variant: "danger"
                   }
                 )
@@ -3980,13 +3982,13 @@ const Translations = () => {
             ] }, translation.id);
           }) })
         ] }),
-        /* @__PURE__ */ jsx(Flex, { justifyContent: "space-between", paddingTop: "1rem", children: translations?.pagination && /* @__PURE__ */ jsx(Pagination, { pagination: translations?.pagination, onPagePress: handlePagePress }) })
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { justifyContent: "space-between", paddingTop: "1rem", children: translations?.pagination && /* @__PURE__ */ jsxRuntime.jsx(Pagination, { pagination: translations?.pagination, onPagePress: handlePagePress }) })
       ] })
     ] });
   };
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(Box, { marginBottom: "2rem", width: "100%", children: /* @__PURE__ */ jsx(
-      TextInput,
+  return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { marginBottom: "2rem", width: "100%", children: /* @__PURE__ */ jsxRuntime.jsx(
+      designSystem.TextInput,
       {
         name: "search",
         placeholder: "Search by key or translation value...",
@@ -3997,7 +3999,7 @@ const Translations = () => {
     renderContent(),
     renderEmptyState(),
     renderLoader(),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntime.jsx(
       TranslationCreateEditModal,
       {
         ref: translationCreatedEditModalRef,
@@ -4006,7 +4008,7 @@ const Translations = () => {
         refetch: handleRefetch
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntime.jsx(
       ConfirmModal,
       {
         ref: confirmDeleteModalRef,
@@ -4019,13 +4021,13 @@ const Translations = () => {
   ] });
 };
 const getNamespace = async (id) => {
-  return axios.get(`/${PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
+  return axios.get(`/${index.PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
 };
 const TranslationsPage = () => {
-  const params = useParams();
+  const params = reactRouterDom.useParams();
   const { namespaceId, projectId } = params;
-  const [namespace, setNamespace] = useState(null);
-  useEffect(() => {
+  const [namespace, setNamespace] = react.useState(null);
+  react.useEffect(() => {
     const fetchNamespace = async () => {
       if (namespaceId) {
         const data = await getNamespace(namespaceId);
@@ -4034,19 +4036,19 @@ const TranslationsPage = () => {
     };
     fetchNamespace();
   }, [namespaceId]);
-  return /* @__PURE__ */ jsxs(Main, { padding: "2rem", children: [
-    /* @__PURE__ */ jsxs(Box, { paddingBottom: "1rem", children: [
-      /* @__PURE__ */ jsx(Flex, { paddingBottom: "0.5rem", gap: "1rem", children: /* @__PURE__ */ jsx(Typography, { variant: "alpha", children: "Static translations" }) }),
-      /* @__PURE__ */ jsxs(Breadcrumbs, { label: "Folder navigatation", children: [
-        /* @__PURE__ */ jsx(CrumbLink, { href: `/admin/plugins/${PLUGIN_ID}`, children: "Projects" }),
-        /* @__PURE__ */ jsxs(CrumbLink, { href: `/admin/plugins/${PLUGIN_ID}/projects/${projectId}`, children: [
+  return /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Main, { padding: "2rem", children: [
+    /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Box, { paddingBottom: "1rem", children: [
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { paddingBottom: "0.5rem", gap: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "alpha", children: "Static translations" }) }),
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Breadcrumbs, { label: "Folder navigatation", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.CrumbLink, { href: `/admin/plugins/${index.PLUGIN_ID}`, children: "Projects" }),
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.CrumbLink, { href: `/admin/plugins/${index.PLUGIN_ID}/projects/${projectId}`, children: [
           "Namespaces ",
           namespace ? ` - ${namespace.name}` : ""
         ] }),
-        /* @__PURE__ */ jsx(Crumb, { isCurrent: true, children: "Translations" })
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Crumb, { isCurrent: true, children: "Translations" })
       ] })
     ] }),
-    /* @__PURE__ */ jsx(Box, { padding: "1rem", children: /* @__PURE__ */ jsx(Translations, {}) })
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { padding: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(Translations, {}) })
   ] });
 };
 const getProjectTranslations = async ({
@@ -4057,7 +4059,7 @@ const getProjectTranslations = async ({
 }) => {
   const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
   return axios.get(
-    `/${PLUGIN_ID}/api/projects/${projectId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
+    `/${index.PLUGIN_ID}/api/projects/${projectId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
   ).then((res) => res.data);
 };
 const deleteTranslation = async ({
@@ -4066,14 +4068,14 @@ const deleteTranslation = async ({
 }) => {
   try {
     const translation = await axios.get(
-      `/${PLUGIN_ID}/api/projects/${projectId}/translations/${translationId}`
+      `/${index.PLUGIN_ID}/api/projects/${projectId}/translations/${translationId}`
     );
     const namespaceId = translation.data.namespace?.id;
     if (!namespaceId) {
       throw new Error("Cannot find namespace for translation");
     }
     const response = await axios.delete(
-      `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${translationId}`
+      `/${index.PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${translationId}`
     );
     return response.data;
   } catch (error) {
@@ -4081,20 +4083,20 @@ const deleteTranslation = async ({
   }
 };
 const useHook = () => {
-  const params = useParams();
+  const params = reactRouterDom.useParams();
   const projectId = Number(params.projectId);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const confirmDeleteModalRef = useRef(null);
-  const translationCreatedEditModalRef = useRef(
+  const [searchParams, setSearchParams] = reactRouterDom.useSearchParams();
+  const confirmDeleteModalRef = react.useRef(null);
+  const translationCreatedEditModalRef = react.useRef(
     null
   );
-  const [selectedDeleteTranslation, setSelectedDeleteTranslation] = useState(
+  const [selectedDeleteTranslation, setSelectedDeleteTranslation] = react.useState(
     null
   );
-  const [isPending, setIsPending] = useState(true);
-  const [translations, setTranslations] = useState(null);
-  const [showMissingTranslationsOnly, setShowMissingTranslationsOnly] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isPending, setIsPending] = react.useState(true);
+  const [translations, setTranslations] = react.useState(null);
+  const [showMissingTranslationsOnly, setShowMissingTranslationsOnly] = react.useState(false);
+  const [searchQuery, setSearchQuery] = react.useState("");
   const handleEditTranslation = (translation) => () => {
     translationCreatedEditModalRef.current?.open(translation);
   };
@@ -4161,7 +4163,7 @@ const useHook = () => {
     setShowMissingTranslationsOnly(value);
     handleRefetch({ page: 1, showMissingOnly: value, search: searchQuery });
   };
-  useEffect(() => {
+  react.useEffect(() => {
     if (projectId) {
       handleRefetch({ page: 1, showMissingOnly: showMissingTranslationsOnly, search: "" });
     }
@@ -4205,23 +4207,23 @@ const ProjectTranslations = () => {
   } = useHook();
   const renderLoader = () => {
     if (isPending && !translations?.items.length) {
-      return /* @__PURE__ */ jsx(Box, { children: /* @__PURE__ */ jsx(Loader, {}) });
+      return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Loader, {}) });
     }
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   };
   const renderEmptyState = () => {
     if (!isPending && !translations?.items.length) {
-      return /* @__PURE__ */ jsx(Box, { background: "neutral100", children: /* @__PURE__ */ jsx(EmptyStateLayout, { content: "No translations found in this project." }) });
+      return /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { background: "neutral100", children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.EmptyStateLayout, { content: "No translations found in this project." }) });
     }
-    return /* @__PURE__ */ jsx(Fragment, {});
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
   };
   const renderContent = () => {
     if (!isPending && !translations?.items.length) {
-      return /* @__PURE__ */ jsx(Fragment, {});
+      return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, {});
     }
-    return /* @__PURE__ */ jsxs(Fragment, { children: [
-      !!translations?.items?.length && /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsx(Flex, { marginBottom: "1rem", gap: "1rem", children: /* @__PURE__ */ jsx(
-        Switch,
+    return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+      !!translations?.items?.length && /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { marginBottom: "1rem", gap: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(
+        designSystem.Switch,
         {
           checked: showMissingTranslationsOnly,
           name: "showMissingTranslationsOnly",
@@ -4231,21 +4233,21 @@ const ProjectTranslations = () => {
           visibleLabels: true
         }
       ) }) }),
-      /* @__PURE__ */ jsxs(Box, { paddingTop: "1rem", paddingBottom: "1rem", children: [
-        /* @__PURE__ */ jsxs(Table, { colCount: 3, rowCount: translations?.items?.length || 0, children: [
-          /* @__PURE__ */ jsx(Thead, { children: /* @__PURE__ */ jsxs(Tr, { style: { width: "280px" }, children: [
-            /* @__PURE__ */ jsx(Th, { children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Key" }) }),
-            /* @__PURE__ */ jsx(Th, { children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Translations" }) }),
-            /* @__PURE__ */ jsx(Th, { style: { width: "120px" }, children: /* @__PURE__ */ jsx(Typography, { variant: "sigma", children: "Actions" }) })
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Box, { paddingTop: "1rem", paddingBottom: "1rem", children: [
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Table, { colCount: 3, rowCount: translations?.items?.length || 0, children: [
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Thead, { children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Tr, { style: { width: "280px" }, children: [
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Key" }) }),
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Translations" }) }),
+            /* @__PURE__ */ jsxRuntime.jsx(designSystem.Th, { style: { width: "120px" }, children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "sigma", children: "Actions" }) })
           ] }) }),
-          /* @__PURE__ */ jsx(Tbody, { children: translations?.items?.map((translation) => {
+          /* @__PURE__ */ jsxRuntime.jsx(designSystem.Tbody, { children: translations?.items?.map((translation) => {
             const isMissing = Object.values(locales).some(
               (locale) => !translation[locale.code]
             );
-            return /* @__PURE__ */ jsxs(Tr, { children: [
-              /* @__PURE__ */ jsx(Td, { style: { width: "280px", verticalAlign: "top" }, children: /* @__PURE__ */ jsxs(Flex, { gap: 2, paddingTop: "15px", children: [
-                /* @__PURE__ */ jsx(
-                  Typography,
+            return /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Tr, { children: [
+              /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { style: { width: "280px", verticalAlign: "top" }, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: 2, paddingTop: "15px", children: [
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  designSystem.Typography,
                   {
                     cursor: "pointer",
                     fontWeight: "bold",
@@ -4254,10 +4256,10 @@ const ProjectTranslations = () => {
                     children: translation.key
                   }
                 ),
-                isMissing && /* @__PURE__ */ jsx(Badge, { backgroundColor: "red", style: { padding: "2px 6px" }, children: /* @__PURE__ */ jsx(Typography, { fontWeight: "bold", textColor: "white", fontSize: "9px", children: "Missing" }) })
+                isMissing && /* @__PURE__ */ jsxRuntime.jsx(designSystem.Badge, { backgroundColor: "red", style: { padding: "2px 6px" }, children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { fontWeight: "bold", textColor: "white", fontSize: "9px", children: "Missing" }) })
               ] }) }),
-              /* @__PURE__ */ jsx(
-                Td,
+              /* @__PURE__ */ jsxRuntime.jsx(
+                designSystem.Td,
                 {
                   style: {
                     paddingTop: "10px",
@@ -4265,9 +4267,9 @@ const ProjectTranslations = () => {
                     whiteSpace: "normal",
                     wordBreak: "break-word"
                   },
-                  children: locales.map((locale) => /* @__PURE__ */ jsxs(Flex, { marginRight: 1, padding: 1, alignItems: "flex-start", children: [
-                    /* @__PURE__ */ jsx(Box, { display: "flex", children: /* @__PURE__ */ jsxs(
-                      Typography,
+                  children: locales.map((locale) => /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { marginRight: 1, padding: 1, alignItems: "flex-start", children: [
+                    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { display: "flex", children: /* @__PURE__ */ jsxRuntime.jsxs(
+                      designSystem.Typography,
                       {
                         lineHeight: "14px",
                         fontWeight: "bold",
@@ -4280,26 +4282,26 @@ const ProjectTranslations = () => {
                         ]
                       }
                     ) }),
-                    /* @__PURE__ */ jsx(Typography, { lineHeight: "16px", variant: "omega", children: translation[locale.code] || "-" })
+                    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { lineHeight: "16px", variant: "omega", children: translation[locale.code] || "-" })
                   ] }, locale.code))
                 }
               ),
-              /* @__PURE__ */ jsx(Td, { style: { width: "120px" }, children: /* @__PURE__ */ jsxs(Flex, { gap: "0.5rem", justifyContent: "flex-end", children: [
-                /* @__PURE__ */ jsx(
-                  Button,
+              /* @__PURE__ */ jsxRuntime.jsx(designSystem.Td, { style: { width: "120px" }, children: /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Flex, { gap: "0.5rem", justifyContent: "flex-end", children: [
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  designSystem.Button,
                   {
                     gap: "0",
                     onClick: handleEditTranslation(translation),
                     variant: "secondary",
-                    startIcon: /* @__PURE__ */ jsx(Pencil, {})
+                    startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Pencil, {})
                   }
                 ),
-                /* @__PURE__ */ jsx(
-                  Button,
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  designSystem.Button,
                   {
                     gap: "0",
                     onClick: handleToggleDeleteTranslation(translation),
-                    startIcon: /* @__PURE__ */ jsx(Trash, { color: "white" }),
+                    startIcon: /* @__PURE__ */ jsxRuntime.jsx(icons.Trash, { color: "white" }),
                     variant: "danger"
                   }
                 )
@@ -4307,13 +4309,13 @@ const ProjectTranslations = () => {
             ] }, translation.id);
           }) })
         ] }),
-        /* @__PURE__ */ jsx(Flex, { justifyContent: "space-between", paddingTop: "1rem", children: translations?.pagination && /* @__PURE__ */ jsx(Pagination, { pagination: translations?.pagination, onPagePress: handlePagePress }) })
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { justifyContent: "space-between", paddingTop: "1rem", children: translations?.pagination && /* @__PURE__ */ jsxRuntime.jsx(Pagination, { pagination: translations?.pagination, onPagePress: handlePagePress }) })
       ] })
     ] });
   };
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(Box, { marginBottom: "2rem", width: "100%", children: /* @__PURE__ */ jsx(
-      TextInput,
+  return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { marginBottom: "2rem", width: "100%", children: /* @__PURE__ */ jsxRuntime.jsx(
+      designSystem.TextInput,
       {
         name: "search",
         placeholder: "Search by key or translation value...",
@@ -4324,7 +4326,7 @@ const ProjectTranslations = () => {
     renderContent(),
     renderEmptyState(),
     renderLoader(),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntime.jsx(
       TranslationCreateEditModal,
       {
         ref: translationCreatedEditModalRef,
@@ -4333,7 +4335,7 @@ const ProjectTranslations = () => {
         refetch: handleRefetch
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntime.jsx(
       ConfirmModal,
       {
         ref: confirmDeleteModalRef,
@@ -4346,13 +4348,13 @@ const ProjectTranslations = () => {
   ] });
 };
 const getProject = async (id) => {
-  return axios.get(`/${PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
+  return axios.get(`/${index.PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
 };
 const ProjectTranslationsPage = () => {
-  const params = useParams();
+  const params = reactRouterDom.useParams();
   const { projectId } = params;
-  const [project, setProject] = useState(null);
-  useEffect(() => {
+  const [project, setProject] = react.useState(null);
+  react.useEffect(() => {
     const fetchProject = async () => {
       if (projectId) {
         const data = await getProject(projectId);
@@ -4361,43 +4363,41 @@ const ProjectTranslationsPage = () => {
     };
     fetchProject();
   }, [projectId]);
-  return /* @__PURE__ */ jsxs(Main, { padding: "2rem", children: [
-    /* @__PURE__ */ jsxs(Box, { paddingBottom: "1rem", children: [
-      /* @__PURE__ */ jsx(Flex, { paddingBottom: "0.5rem", gap: "1rem", children: /* @__PURE__ */ jsx(Typography, { variant: "alpha", children: "Static translations" }) }),
-      /* @__PURE__ */ jsxs(Breadcrumbs, { label: "Folder navigatation", children: [
-        /* @__PURE__ */ jsx(CrumbLink, { href: `/admin/plugins/${PLUGIN_ID}`, children: "Projects" }),
-        /* @__PURE__ */ jsxs(Crumb, { isCurrent: true, children: [
+  return /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Main, { padding: "2rem", children: [
+    /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Box, { paddingBottom: "1rem", children: [
+      /* @__PURE__ */ jsxRuntime.jsx(designSystem.Flex, { paddingBottom: "0.5rem", gap: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(designSystem.Typography, { variant: "alpha", children: "Static translations" }) }),
+      /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Breadcrumbs, { label: "Folder navigatation", children: [
+        /* @__PURE__ */ jsxRuntime.jsx(designSystem.CrumbLink, { href: `/admin/plugins/${index.PLUGIN_ID}`, children: "Projects" }),
+        /* @__PURE__ */ jsxRuntime.jsxs(designSystem.Crumb, { isCurrent: true, children: [
           "All translations ",
           project ? ` - ${project.name}` : ""
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsx(Box, { padding: "1rem", children: /* @__PURE__ */ jsx(ProjectTranslations, {}) })
+    /* @__PURE__ */ jsxRuntime.jsx(designSystem.Box, { padding: "1rem", children: /* @__PURE__ */ jsxRuntime.jsx(ProjectTranslations, {}) })
   ] });
 };
 const App = () => {
-  return /* @__PURE__ */ jsx(DesignSystemProvider, { locale: "en-GB", theme: darkTheme, children: /* @__PURE__ */ jsxs(Routes, { children: [
-    /* @__PURE__ */ jsx(Route, { index: true, path: "/", element: /* @__PURE__ */ jsx(ProjectsPage, {}) }),
-    /* @__PURE__ */ jsx(Route, { index: true, path: "/projects/:projectId", element: /* @__PURE__ */ jsx(NamespacesPage, {}) }),
-    /* @__PURE__ */ jsx(
-      Route,
+  return /* @__PURE__ */ jsxRuntime.jsx(designSystem.DesignSystemProvider, { locale: "en-GB", theme: designSystem.darkTheme, children: /* @__PURE__ */ jsxRuntime.jsxs(reactRouterDom.Routes, { children: [
+    /* @__PURE__ */ jsxRuntime.jsx(reactRouterDom.Route, { index: true, path: "/", element: /* @__PURE__ */ jsxRuntime.jsx(ProjectsPage, {}) }),
+    /* @__PURE__ */ jsxRuntime.jsx(reactRouterDom.Route, { index: true, path: "/projects/:projectId", element: /* @__PURE__ */ jsxRuntime.jsx(NamespacesPage, {}) }),
+    /* @__PURE__ */ jsxRuntime.jsx(
+      reactRouterDom.Route,
       {
         index: true,
         path: "/projects/:projectId/translations",
-        element: /* @__PURE__ */ jsx(ProjectTranslationsPage, {})
+        element: /* @__PURE__ */ jsxRuntime.jsx(ProjectTranslationsPage, {})
       }
     ),
-    /* @__PURE__ */ jsx(
-      Route,
+    /* @__PURE__ */ jsxRuntime.jsx(
+      reactRouterDom.Route,
       {
         index: true,
         path: "/projects/:projectId/namespaces/:namespaceId",
-        element: /* @__PURE__ */ jsx(TranslationsPage, {})
+        element: /* @__PURE__ */ jsxRuntime.jsx(TranslationsPage, {})
       }
     ),
-    /* @__PURE__ */ jsx(Route, { path: "*", element: /* @__PURE__ */ jsx(Page.Error, {}) })
+    /* @__PURE__ */ jsxRuntime.jsx(reactRouterDom.Route, { path: "*", element: /* @__PURE__ */ jsxRuntime.jsx(admin.Page.Error, {}) })
   ] }) });
 };
-export {
-  App as default
-};
+exports.default = App;

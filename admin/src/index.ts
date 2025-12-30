@@ -16,7 +16,12 @@ export default {
         const App = await import('./pages/App');
         return App;
       },
-      permissions: [],
+      permissions: [
+        {
+          action: 'plugin::strapi-static-strings.read',
+          subject: null,
+        },
+      ],
     });
 
     app.registerPlugin({

@@ -19,10 +19,15 @@ const index = {
         defaultMessage: "Static translations"
       },
       Component: async () => {
-        const App = await Promise.resolve().then(() => require("./App-D4zdK8PZ.js"));
+        const App = await Promise.resolve().then(() => require("./App-DTOq4uBW.js"));
         return App;
       },
-      permissions: []
+      permissions: [
+        {
+          action: "plugin::strapi-static-strings.read",
+          subject: null
+        }
+      ]
     });
     app.registerPlugin({
       id: PLUGIN_ID,

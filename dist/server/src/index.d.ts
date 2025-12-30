@@ -43,7 +43,17 @@ declare const _default: {
             cliSyncTranslationOverwrite(ctx: any): Promise<any>;
         };
     };
-    routes: {
+    routes: ({
+        method: string;
+        path: string;
+        handler: string;
+        config: {
+            policies: any[];
+            auth: {
+                scope: string[];
+            };
+        };
+    } | {
         method: string;
         path: string;
         handler: string;
@@ -51,7 +61,7 @@ declare const _default: {
             auth: boolean;
             policies: any[];
         };
-    }[];
+    })[];
     services: {
         translation: ({ strapi }: {
             strapi: import("@strapi/types/dist/core").Strapi;
