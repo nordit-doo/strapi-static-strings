@@ -91,6 +91,14 @@ declare const _default: {
                 options: {
                     draftAndPublish: boolean;
                 };
+                pluginOptions: {
+                    "content-manager": {
+                        visible: boolean;
+                    };
+                    "content-type-builder": {
+                        visible: boolean;
+                    };
+                };
                 attributes: {
                     description: {
                         type: string;
@@ -126,6 +134,14 @@ declare const _default: {
                 options: {
                     draftAndPublish: boolean;
                 };
+                pluginOptions: {
+                    "content-manager": {
+                        visible: boolean;
+                    };
+                    "content-type-builder": {
+                        visible: boolean;
+                    };
+                };
                 attributes: {
                     description: {
                         type: string;
@@ -156,6 +172,14 @@ declare const _default: {
                 };
                 options: {
                     draftAndPublish: boolean;
+                };
+                pluginOptions: {
+                    "content-manager": {
+                        visible: boolean;
+                    };
+                    "content-type-builder": {
+                        visible: boolean;
+                    };
                 };
                 attributes: {
                     key: {

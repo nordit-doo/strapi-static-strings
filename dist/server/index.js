@@ -62,6 +62,14 @@ const info$3 = {
 const options$3 = {
   draftAndPublish: false
 };
+const pluginOptions$3 = {
+  "content-manager": {
+    visible: false
+  },
+  "content-type-builder": {
+    visible: false
+  }
+};
 const attributes$3 = {
   description: {
     type: "string",
@@ -88,6 +96,7 @@ const namespace$1 = {
   collectionName: collectionName$3,
   info: info$3,
   options: options$3,
+  pluginOptions: pluginOptions$3,
   attributes: attributes$3
 };
 const collectionName$2 = "strapi_static_strings_projects";
@@ -98,6 +107,14 @@ const info$2 = {
 };
 const options$2 = {
   draftAndPublish: false
+};
+const pluginOptions$2 = {
+  "content-manager": {
+    visible: false
+  },
+  "content-type-builder": {
+    visible: false
+  }
 };
 const attributes$2 = {
   description: {
@@ -121,6 +138,7 @@ const project$1 = {
   collectionName: collectionName$2,
   info: info$2,
   options: options$2,
+  pluginOptions: pluginOptions$2,
   attributes: attributes$2
 };
 const collectionName$1 = "strapi_static_strings_settings";
@@ -131,6 +149,14 @@ const info$1 = {
 };
 const options$1 = {
   draftAndPublish: false
+};
+const pluginOptions$1 = {
+  "content-manager": {
+    visible: false
+  },
+  "content-type-builder": {
+    visible: false
+  }
 };
 const attributes$1 = {
   key: {
@@ -147,6 +173,7 @@ const setting$1 = {
   collectionName: collectionName$1,
   info: info$1,
   options: options$1,
+  pluginOptions: pluginOptions$1,
   attributes: attributes$1
 };
 const kind = "collectionType";
@@ -163,10 +190,10 @@ const options = {
 };
 const pluginOptions = {
   "content-manager": {
-    visible: true
+    visible: false
   },
   "content-type-builder": {
-    visible: true
+    visible: false
   }
 };
 const attributes = {
