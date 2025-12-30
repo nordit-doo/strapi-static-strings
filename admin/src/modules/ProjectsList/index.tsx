@@ -17,6 +17,7 @@ export const ProjectsList = () => {
     handleProjectCreate,
     handleRefetch,
     handleToggleDelete,
+    handleViewAllTranslations,
     isPending,
     projectCreatedEditModalRef,
     projects,
@@ -81,6 +82,7 @@ export const ProjectsList = () => {
                   onClipboardCopy={handleClipboardCopy}
                   onEdit={handleEdit}
                   onDelete={handleToggleDelete}
+                  onViewAllTranslations={handleViewAllTranslations}
                   project={project}
                 />
               </Grid.Item>

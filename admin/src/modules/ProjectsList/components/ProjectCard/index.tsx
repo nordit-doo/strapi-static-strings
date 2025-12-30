@@ -9,13 +9,14 @@ import {
   Flex,
   Typography,
 } from '@strapi/design-system';
-import { Duplicate, Pencil, Trash } from '@strapi/icons';
+import { Duplicate, Eye, Pencil, Trash } from '@strapi/icons';
 import { ProjectCardProps } from './types';
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
   onClipboardCopy,
   onEdit,
   onDelete,
+  onViewAllTranslations,
   project,
 }) => (
   <Card height="100%" width="100%">
@@ -45,15 +46,26 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       </CardContent>
     </CardBody>
 
-    <Flex display="flex" gap="0.5rem" justifyContent="flex-end" padding="1rem" width="100%">
-      <Button
-        color="white"
-        gap="0"
-        variant="secondary"
-        onClick={onDelete(project)}
-        startIcon={<Trash color="white" />}
-      />
-      <Button gap="0" onClick={onEdit(project)} startIcon={<Pencil color="white" />} />
+    <Flex display="flex" gap="15rem" justifyContent="flex-start" padding="1rem" width="100%">
+      <Flex display="flex">
+        <Button
+          color="white"
+          gap="0"
+          onClick={onViewAllTranslations(project)}
+          startIcon={<Eye color="white" />}
+          title="View all translations"
+        />
+      </Flex>
+      <Flex display="flex" gap="0.5rem" justifyContent="flex-end">
+        <Button
+          color="white"
+          gap="0"
+          variant="secondary"
+          onClick={onDelete(project)}
+          startIcon={<Trash color="white" />}
+        />
+        <Button gap="0" onClick={onEdit(project)} startIcon={<Pencil color="white" />} />
+      </Flex>
     </Flex>
   </Card>
 );

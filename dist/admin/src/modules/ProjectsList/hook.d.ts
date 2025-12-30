@@ -10,6 +10,7 @@ export declare const useHook: () => {
     handleProjectCreate: () => void;
     handleRefetch: () => Promise<void>;
     handleToggleDelete: (project?: IProject) => (e: React.MouseEvent) => Promise<void>;
+    handleViewAllTranslations: (project: IProject) => (e: React.MouseEvent) => void;
     isPending: boolean;
     projectCreatedEditModalRef: import("react").MutableRefObject<{
         open: (data?: IProject) => void;

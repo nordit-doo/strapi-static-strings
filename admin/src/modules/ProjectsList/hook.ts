@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import { IPagination } from '../../../../types/Common';
 import { IProject } from '../../../../types/Project';
@@ -18,6 +19,7 @@ const deleteProject = async (id: string) => {
 
 export const useHook = () => {
   const { toggleNotification } = useNotification();
+  const navigate = useNavigate();
 
   const confirmDeleteModalRef = useRef<IConfirmModalRef<unknown> | null>(null);
   const projectCreatedEditModalRef = useRef<{ open: (data?: IProject) => void } | null>(null);
@@ -40,6 +42,11 @@ export const useHook = () => {
   const handleEdit = (project: IProject) => (e: React.MouseEvent) => {
     e.preventDefault();
     projectCreatedEditModalRef.current?.open(project);
+  };
+
+  const handleViewAllTranslations = (project: IProject) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(`/plugins/${PLUGIN_ID}/projects/${project.id}/translations`);
   };
 
   const handleToggleDelete = (project?: IProject) => async (e: React.MouseEvent) => {
@@ -97,6 +104,7 @@ export const useHook = () => {
     handleProjectCreate,
     handleRefetch,
     handleToggleDelete,
+    handleViewAllTranslations,
     isPending,
     projectCreatedEditModalRef,
     projects,

@@ -102,10 +102,11 @@ export default {
   },
   async translationFindTranslationById(ctx: Context) {
     const { translationId } = ctx.params;
-    const namespace = await strapi.db
-      .query(`plugin::${PLUGIN_ID}.translation`)
-      .findOne({ where: { id: translationId } });
-    ctx.body = namespace;
+    const translation = await strapi.db.query(`plugin::${PLUGIN_ID}.translation`).findOne({
+      where: { id: translationId },
+      populate: ['namespace'],
+    });
+    ctx.body = translation;
   },
   async translationFindTranslationsMissingCountAnyLanguage(ctx) {
     const knex = strapi.db.connection;
@@ -124,6 +125,112 @@ export default {
     ctx.body = {
       count: Number(result.count),
       locales: localeCodes,
+    };
+  },
+
+  async translationFindAllProjectTranslations(ctx: Context) {
+    const page = Number(ctx.query.page) || 1;
+    const pageSize = Number(ctx.query.pageSize) || 15;
+    const start = (page - 1) * pageSize;
+    const projectId = Number(ctx.params.projectId);
+    const showMissingOnly = String(ctx.query.showMissingOnly) === 'true';
+    const searchQuery = String(ctx.query.search || '').trim();
+
+    const knex = strapi.db.connection;
+    const table = PLUGIN_TRANSLATION_TABLE_NAME;
+
+    // languages available
+    const locales = await strapi.plugin('i18n').service('locales').find();
+    const localeCodes: string[] = locales.map((l) => l.code);
+
+    // metadata about "namespace" attribute (relation mapping)
+    const meta = strapi.db.metadata.get(`plugin::${PLUGIN_ID}.translation`);
+    const nsAttr = meta.attributes.namespace;
+
+    let query = knex({ t: table })
+      .select('t.*')
+      .orderBy('t.key', 'asc')
+      .limit(pageSize)
+      .offset(start);
+    let countQuery = knex({ t: table }).count<{ count: string }>(' * as count');
+
+    if ('columnName' in nsAttr && nsAttr.columnName) {
+      // Direct column relationship
+      const namespaceTable = 'strapi_static_strings_namespaces';
+      const projectLinkTable = 'strapi_static_strings_namespaces_project_lnk';
+
+      query = query
+        .join({ ns: namespaceTable }, `t.${nsAttr.columnName}`, 'ns.id')
+        .join({ pl: projectLinkTable }, 'pl.namespace_id', 'ns.id')
+        .where('pl.project_id', projectId);
+
+      countQuery = countQuery
+        .join({ ns: namespaceTable }, `t.${nsAttr.columnName}`, 'ns.id')
+        .join({ pl: projectLinkTable }, 'pl.namespace_id', 'ns.id')
+        .where('pl.project_id', projectId);
+    } else if (
+      'joinTable' in nsAttr &&
+      nsAttr.joinTable &&
+      'name' in nsAttr.joinTable &&
+      'joinColumn' in nsAttr.joinTable &&
+      'inverseJoinColumn' in nsAttr.joinTable &&
+      nsAttr.joinTable.name &&
+      nsAttr.joinTable.joinColumn?.name &&
+      nsAttr.joinTable.inverseJoinColumn?.name
+    ) {
+      // Join table relationship
+      const jtName = nsAttr.joinTable.name;
+      const jtJoinCol = nsAttr.joinTable.joinColumn.name;
+      const jtInverseCol = nsAttr.joinTable.inverseJoinColumn.name;
+      const namespaceTable = 'strapi_static_strings_namespaces';
+      const projectLinkTable = 'strapi_static_strings_namespaces_project_lnk';
+
+      query = query
+        .join({ jt: jtName }, `jt.${jtJoinCol}`, 't.id')
+        .join({ ns: namespaceTable }, `jt.${jtInverseCol}`, 'ns.id')
+        .join({ pl: projectLinkTable }, 'pl.namespace_id', 'ns.id')
+        .where('pl.project_id', projectId);
+
+      countQuery = countQuery
+        .join({ jt: jtName }, `jt.${jtJoinCol}`, 't.id')
+        .join({ ns: namespaceTable }, `jt.${jtInverseCol}`, 'ns.id')
+        .join({ pl: projectLinkTable }, 'pl.namespace_id', 'ns.id')
+        .where('pl.project_id', projectId);
+    } else {
+      ctx.throw(500, 'Namespace relation not mapped (no columnName or joinTable).');
+    }
+
+    // filter: showOnlyMissing=true  → at least one language is missing
+    if (showMissingOnly && localeCodes.length) {
+      const addMissingClause = function (this: any) {
+        for (const lang of localeCodes) {
+          this.orWhereNull(`t.${lang}`).orWhere(`t.${lang}`, '');
+        }
+      };
+      query.andWhere(addMissingClause);
+      countQuery.andWhere(addMissingClause);
+    }
+
+    // filter: search by key or translation values
+    if (searchQuery) {
+      const addSearchClause = function (this: any) {
+        // Search in key field
+        this.where(`t.key`, 'like', `%${searchQuery}%`);
+        // Search in all locale fields
+        for (const lang of localeCodes) {
+          this.orWhere(`t.${lang}`, 'like', `%${searchQuery}%`);
+        }
+      };
+      query.andWhere(addSearchClause);
+      countQuery.andWhere(addSearchClause);
+    }
+
+    const items = await query;
+    const total = Number((await countQuery.first())?.count ?? 0);
+
+    ctx.body = {
+      items,
+      pagination: { page, pageSize, total, pageCount: Math.ceil(total / pageSize) },
     };
   },
 

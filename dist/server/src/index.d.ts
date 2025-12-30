@@ -18,6 +18,7 @@ declare const _default: {
             translationFindTranslations(ctx: import("koa").Context): Promise<void>;
             translationFindTranslationById(ctx: import("koa").Context): Promise<void>;
             translationFindTranslationsMissingCountAnyLanguage(ctx: any): Promise<void>;
+            translationFindAllProjectTranslations(ctx: import("koa").Context): Promise<void>;
             translationCreateTranslation(ctx: import("koa").Context): Promise<void>;
             translationUpdateTranslation(ctx: import("koa").Context): Promise<void>;
             translationDeleteTranslation(ctx: import("koa").Context): Promise<void>;

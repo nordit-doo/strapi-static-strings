@@ -2,6 +2,18 @@ export default {
   routes: [
     {
       method: 'GET',
+      path: '/api/projects/:projectId/translations',
+      handler: 'controller.translationFindAllProjectTranslations',
+      config: { auth: false, policies: [] },
+    },
+    {
+      method: 'GET',
+      path: '/api/projects/:projectId/translations/:translationId',
+      handler: 'controller.translationFindTranslationById',
+      config: { auth: false, policies: [] },
+    },
+    {
+      method: 'GET',
       path: '/api/projects/:projectId/namespaces/:namespaceId/translations',
       handler: 'controller.translationFindTranslations',
       config: { auth: false, policies: [] },

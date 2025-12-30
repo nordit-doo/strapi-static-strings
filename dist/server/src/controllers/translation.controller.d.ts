@@ -6,6 +6,7 @@ declare const _default: {
     translationFindTranslations(ctx: Context): Promise<void>;
     translationFindTranslationById(ctx: Context): Promise<void>;
     translationFindTranslationsMissingCountAnyLanguage(ctx: any): Promise<void>;
+    translationFindAllProjectTranslations(ctx: Context): Promise<void>;
     /*************************************************************************************************
      * TRANSLATION controllers - mutation
      *************************************************************************************************/
