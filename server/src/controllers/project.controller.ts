@@ -7,6 +7,12 @@ import {
 
 export default {
   async projectFindProjects(ctx) {
+    strapi.log.info('[projectFindProjects] CONTROLLER CALLED!!!');
+    strapi.log.info(
+      '[projectFindProjects] User from ctx.state:',
+      ctx.state.user || ctx.state.admin
+    );
+
     const page = Number(ctx.query.page) || 1;
     const pageSize = Number(ctx.query.pageSize) || 15;
     const start = (page - 1) * pageSize;

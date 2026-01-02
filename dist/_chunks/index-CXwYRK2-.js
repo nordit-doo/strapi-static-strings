@@ -1,9 +1,10 @@
-import { useRef, useEffect } from "react";
-import { Pencil } from "@strapi/icons";
+"use strict";
+const react = require("react");
+const icons = require("@strapi/icons");
 const PLUGIN_ID = "strapi-static-strings";
 const Initializer = ({ setPlugin }) => {
-  const ref = useRef(setPlugin);
-  useEffect(() => {
+  const ref = react.useRef(setPlugin);
+  react.useEffect(() => {
     ref.current(PLUGIN_ID);
   }, []);
   return null;
@@ -12,18 +13,18 @@ const index = {
   register(app) {
     app.addMenuLink({
       to: `plugins/${PLUGIN_ID}`,
-      icon: Pencil,
+      icon: icons.Pencil,
       intlLabel: {
         id: `${PLUGIN_ID}.plugin.name`,
         defaultMessage: "Static translations"
       },
       Component: async () => {
-        const App = await import("./App-CcDAjWzh.mjs");
+        const App = await Promise.resolve().then(() => require("./App-Byz4V5MS.js"));
         return App;
       },
       permissions: [
         {
-          action: "plugin::strapi-static-strings.read",
+          action: `plugin::${PLUGIN_ID}.main`,
           subject: null
         }
       ]
@@ -36,7 +37,5 @@ const index = {
     });
   }
 };
-export {
-  PLUGIN_ID as P,
-  index as i
-};
+exports.PLUGIN_ID = PLUGIN_ID;
+exports.index = index;

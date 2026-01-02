@@ -17,6 +17,8 @@ import {
 } from '@strapi/design-system';
 import { Pencil, Plus, Trash } from '@strapi/icons';
 
+import type { ChangeEvent } from 'react';
+
 import { NamespaceCreateEditModal } from './components/NamespaceCreateEditModal';
 import { useHook } from './hook';
 import { Pagination } from '../../components/Pagination';
@@ -172,7 +174,7 @@ export const Namespaces = () => {
           name="search"
           placeholder="Search namespaces by name or description..."
           value={searchQuery}
-          onChange={(e) => handleSearchChange(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => handleSearchChange(e.target.value)}
         />
       </Box>
       {renderContent()}

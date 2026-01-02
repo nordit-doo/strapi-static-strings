@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { getFetchClient } from '@strapi/strapi/admin';
 
 import { PLUGIN_ID } from '../pluginId';
 import { INamespace } from '../../../types/Namespace';
 
+const { get } = getFetchClient();
+
 const getNamespaces = async (projectId: number) => {
-  return axios(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces/all`).then((res) => res.data);
+  return get<INamespace[]>(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces/all`).then(
+    (res) => res.data
+  );
 };
 
 export const useNamespaces = ({ projectId }: { projectId?: number }) => {

@@ -172,7 +172,7 @@ export default {
    *************************************************************************************************/
   async namespaceCreateNamespace(ctx: Context) {
     const { projectId } = ctx.params;
-    const { description, name } = ctx.request.body;
+    const { description, name } = ((ctx.request as any).body ?? {}) as any;
     const newNamespace = await strapi.db
       .query(`plugin::${PLUGIN_ID}.namespace`)
       .create({ data: { description, name, project: { connect: { id: projectId } } } });
@@ -180,7 +180,7 @@ export default {
   },
   async namespaceUpdateNamespace(ctx: Context) {
     const { namespaceId } = ctx.params;
-    const { name, description } = ctx.request.body;
+    const { name, description } = ((ctx.request as any).body ?? {}) as any;
     const updatedNamespace = await strapi.db
       .query(`plugin::${PLUGIN_ID}.namespace`)
       .update({ where: { id: namespaceId }, data: { name, description } });

@@ -1,14 +1,16 @@
 import { Breadcrumbs, Box, Crumb, CrumbLink, Main, Typography } from '@strapi/design-system';
 import { Flex } from '@strapi/design-system';
-import axios from 'axios';
+import { getFetchClient } from '@strapi/strapi/admin';
 
 import { Translations } from '../modules/Translations';
 import { PLUGIN_ID } from '../pluginId';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
+const { get } = getFetchClient();
+
 const getNamespace = async (id: string) => {
-  return axios.get(`/${PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
+  return get(`/${PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
 };
 
 const TranslationsPage = () => {

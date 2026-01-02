@@ -1,20 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
-
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
+import { getFetchClient, useNotification } from '@strapi/strapi/admin';
 
 import { IPagination } from '../../../../types/Common';
 import { IProject } from '../../../../types/Project';
 import { PLUGIN_ID } from '../../pluginId';
-import { useNotification } from '@strapi/strapi/admin';
 import { IConfirmModalRef } from 'src/components/ConfirmModal/types';
 
-const getNamespaces = async () => {
-  return axios(`/${PLUGIN_ID}/api/projects`).then((res) => res.data);
+const { get, del } = getFetchClient();
+
+const getProjects = async () => {
+  const { data } = await get(`/${PLUGIN_ID}/api/projects`);
+  return data;
 };
 
 const deleteProject = async (id: string) => {
-  return axios.delete(`/${PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
+  const { data } = await del(`/${PLUGIN_ID}/api/projects/${id}`);
+  return data;
 };
 
 export const useHook = () => {
@@ -87,7 +90,7 @@ export const useHook = () => {
 
   const handleRefetch = async () => {
     setIsPending(true);
-    const data = await getNamespaces();
+    const data = await getProjects();
     setProjects(data);
     setIsPending(false);
   };

@@ -116,9 +116,9 @@ export default {
 
     const result = await knex(tableName)
       .count('* as count')
-      .where(function () {
+      .where((qb) => {
         for (const lang of localeCodes) {
-          this.orWhereNull(lang).orWhere(lang, '');
+          qb.orWhereNull(lang).orWhere(lang, '');
         }
       })
       .first();
@@ -239,7 +239,7 @@ export default {
    *************************************************************************************************/
   async translationCreateTranslation(ctx: Context) {
     const { namespaceId } = ctx.params;
-    const { key, translations } = ctx.request.body;
+    const { key, translations } = ((ctx.request as any).body ?? {}) as any;
 
     if (!key || !namespaceId) {
       ctx.throw(400, 'Key and namespace are required');
@@ -282,7 +282,7 @@ export default {
 
   async translationUpdateTranslation(ctx: Context) {
     const { translationId } = ctx.params;
-    const { key, translations } = ctx.request.body;
+    const { key, translations } = ((ctx.request as any).body ?? {}) as any;
 
     if (!key) {
       ctx.throw(400, 'Key is required');

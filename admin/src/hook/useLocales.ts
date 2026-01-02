@@ -1,9 +1,14 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+
+import { getFetchClient } from '@strapi/strapi/admin';
+
 import { ILocale } from '../../../types/Locale';
 
+const { get } = getFetchClient();
+
 const getLocales = async () => {
-  return axios.get<ILocale[]>(`/api/i18n/locales`).then((res) => res.data);
+  const { data } = await get<ILocale[]>('/i18n/locales');
+  return data;
 };
 
 export const useLocales = () => {

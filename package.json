@@ -1,7 +1,7 @@
 {
   "name": "strapi-static-strings",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Strapi plugin to manage static strings and translations",
   "keywords": [],
   "license": "MIT",
   "author": "Nordit <info@nordit.co>",

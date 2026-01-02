@@ -60,6 +60,10 @@ export const useHook = () => {
     return false;
   };
 
+  const handleTranslationCreate = () => {
+    translationCreatedEditModalRef.current?.open();
+  };
+
   const handlePagePress = (page: number) => {
     setSearchParams({ page: String(page) });
     handleRefetch({ page, showMissingOnly: showMissingTranslationsOnly, search: searchQuery });
@@ -118,6 +122,7 @@ export const useHook = () => {
     handleSearchChange,
     handleShowMissingTranslationsOnlyChange,
     handleToggleDeleteTranslation,
+    handleTranslationCreate,
     isPending,
     searchQuery,
     translations,

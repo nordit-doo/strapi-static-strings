@@ -1,4 +1,4 @@
-import { i } from "../_chunks/index-DFMlAOxi.mjs";
+import { i } from "../_chunks/index-CDLNC01I.mjs";
 import "@strapi/icons";
 export {
   i as default

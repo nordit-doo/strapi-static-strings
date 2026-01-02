@@ -45,27 +45,9 @@ const register = ({ strapi: strapi2 }) => {
   const actions = [
     {
       section: "plugins",
-      displayName: "Read",
-      uid: "read",
-      pluginName: "strapi-static-strings"
-    },
-    {
-      section: "plugins",
-      displayName: "Create",
-      uid: "create",
-      pluginName: "strapi-static-strings"
-    },
-    {
-      section: "plugins",
-      displayName: "Update",
-      uid: "update",
-      pluginName: "strapi-static-strings"
-    },
-    {
-      section: "plugins",
-      displayName: "Delete",
-      uid: "delete",
-      pluginName: "strapi-static-strings"
+      displayName: "Access the plugin",
+      uid: "main",
+      pluginName: PLUGIN_ID
     }
   ];
   strapi2.admin.services.permission.actionProvider.registerMany(actions);
@@ -503,13 +485,13 @@ const namespaceController = {
    *************************************************************************************************/
   async namespaceCreateNamespace(ctx) {
     const { projectId } = ctx.params;
-    const { description, name } = ctx.request.body;
+    const { description, name } = ctx.request.body ?? {};
     const newNamespace = await strapi.db.query(`plugin::${PLUGIN_ID}.namespace`).create({ data: { description, name, project: { connect: { id: projectId } } } });
     ctx.body = newNamespace;
   },
   async namespaceUpdateNamespace(ctx) {
     const { namespaceId } = ctx.params;
-    const { name, description } = ctx.request.body;
+    const { name, description } = ctx.request.body ?? {};
     const updatedNamespace = await strapi.db.query(`plugin::${PLUGIN_ID}.namespace`).update({ where: { id: namespaceId }, data: { name, description } });
     ctx.body = updatedNamespace;
   },
@@ -532,6 +514,11 @@ const namespaceController = {
 };
 const projectController = {
   async projectFindProjects(ctx) {
+    strapi.log.info("[projectFindProjects] CONTROLLER CALLED!!!");
+    strapi.log.info(
+      "[projectFindProjects] User from ctx.state:",
+      ctx.state.user || ctx.state.admin
+    );
     const page = Number(ctx.query.page) || 1;
     const pageSize = Number(ctx.query.pageSize) || 15;
     const start = (page - 1) * pageSize;
@@ -711,9 +698,9 @@ const translationController = {
     const knex = strapi.db.connection;
     const locales = await strapi.plugin("i18n").service("locales").find();
     const localeCodes = locales.map((l) => l.code);
-    const result = await knex(tableName).count("* as count").where(function() {
+    const result = await knex(tableName).count("* as count").where((qb) => {
       for (const lang of localeCodes) {
-        this.orWhereNull(lang).orWhere(lang, "");
+        qb.orWhereNull(lang).orWhere(lang, "");
       }
     }).first();
     ctx.body = {
@@ -783,7 +770,7 @@ const translationController = {
    *************************************************************************************************/
   async translationCreateTranslation(ctx) {
     const { namespaceId } = ctx.params;
-    const { key, translations } = ctx.request.body;
+    const { key, translations } = ctx.request.body ?? {};
     if (!key || !namespaceId) {
       ctx.throw(400, "Key and namespace are required");
     }
@@ -812,7 +799,7 @@ const translationController = {
   },
   async translationUpdateTranslation(ctx) {
     const { translationId } = ctx.params;
-    const { key, translations } = ctx.request.body;
+    const { key, translations } = ctx.request.body ?? {};
     if (!key) {
       ctx.throw(400, "Key is required");
     }
@@ -860,8 +847,99 @@ const apiKeyPolicy = async (policyContext, config2, { strapi: strapi2 }) => {
   strapi2.log.warn(`[${PLUGIN_ID}] Invalid API key: ${token}`);
   return policyContext.unauthorized("Invalid API key");
 };
+const hasPermissions = async (policyContext, config2, { strapi: strapi2 }) => {
+  strapi2.log.info("========================================");
+  strapi2.log.info("[has-permissions] POLICY CALLED!!!");
+  strapi2.log.info("========================================");
+  const { action } = config2;
+  const ctxKeys = Object.keys(policyContext);
+  strapi2.log.info("[has-permissions] Context keys array:", ctxKeys);
+  strapi2.log.info("[has-permissions] Context keys length:", ctxKeys.length);
+  for (const key of ctxKeys) {
+    if (key === "headers" || key === "header" || key === "state" || key === "request") {
+      strapi2.log.info(`[has-permissions] ${key}:`, typeof policyContext[key]);
+    }
+  }
+  let adminUser = policyContext.state?.user || policyContext.state?.admin;
+  if (!adminUser) {
+    try {
+      strapi2.log.info("[has-permissions] Starting JWT verification...");
+      const authHeader = policyContext.headers?.authorization || policyContext.header?.authorization;
+      strapi2.log.info("[has-permissions] Auth header:", authHeader ? "Present" : "Missing");
+      let token = null;
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.replace("Bearer ", "");
+        strapi2.log.info("[has-permissions] Token extracted from Authorization header");
+      }
+      strapi2.log.info(
+        "[has-permissions] Token found:",
+        token ? "Yes (length: " + token.length + ")" : "No"
+      );
+      if (token) {
+        const tokenService = strapi2.service("admin::token");
+        strapi2.log.info("[has-permissions] Token service available:", tokenService ? "Yes" : "No");
+        if (tokenService && tokenService.decodeJwtToken) {
+          const payload = await tokenService.decodeJwtToken(token);
+          strapi2.log.info("[has-permissions] Decoded payload:", JSON.stringify(payload));
+          if (payload?.id) {
+            adminUser = await strapi2.db.query("admin::user").findOne({
+              where: { id: payload.id },
+              populate: ["roles"]
+            });
+            strapi2.log.info(
+              "[has-permissions] Loaded user from JWT:",
+              adminUser ? "Success (ID: " + adminUser.id + ")" : "Failed"
+            );
+          } else {
+            strapi2.log.warn("[has-permissions] No user ID in payload");
+          }
+        } else {
+          strapi2.log.warn("[has-permissions] Token service or decodeJwtToken method not available");
+        }
+      }
+    } catch (error) {
+      strapi2.log.error(
+        "[has-permissions] JWT verification error:",
+        error?.message || String(error)
+      );
+      strapi2.log.error("[has-permissions] Error stack:", error?.stack || "No stack trace");
+    }
+  }
+  strapi2.log.info("[has-permissions] Checking permission for action:", action);
+  strapi2.log.info("[has-permissions] Admin user:", adminUser ? "Found" : "Not found");
+  if (!adminUser) {
+    strapi2.log.warn("[has-permissions] No admin user found");
+    return false;
+  }
+  const { id: userId, roles } = adminUser;
+  strapi2.log.info("[has-permissions] User ID:", userId);
+  strapi2.log.info(
+    "[has-permissions] User roles:",
+    roles?.map((r) => r.code || r.name)
+  );
+  const isSuperAdmin = roles?.some((role) => role.code === "strapi-super-admin");
+  if (isSuperAdmin) {
+    strapi2.log.info("[has-permissions] User is Super Admin - access granted");
+    return true;
+  }
+  try {
+    const permissions = await strapi2.admin.services.permission.engine.checkMany(userId, [
+      { action }
+    ]);
+    strapi2.log.info("[has-permissions] Permission check result:", permissions);
+    if (permissions && permissions[0]) {
+      strapi2.log.info("[has-permissions] Access granted");
+      return true;
+    }
+  } catch (error) {
+    strapi2.log.error("[has-permissions] Permission check error:", error);
+  }
+  strapi2.log.warn("[has-permissions] Access denied");
+  return false;
+};
 const policies = {
-  "api-key": apiKeyPolicy
+  "api-key": apiKeyPolicy,
+  "has-permissions": hasPermissions
 };
 const cli = {
   routes: [
@@ -908,65 +986,37 @@ const namespace = {
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces",
-      handler: "controller.namespaceFindNamespaces",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.namespaceFindNamespaces"
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/missing-translations",
-      handler: "controller.namespaceFindNamespacesWithMissingTranslations",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.namespaceFindNamespacesWithMissingTranslations"
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/all",
-      handler: "controller.namespaceFindNamespacesAll",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.namespaceFindNamespacesAll"
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/:namespaceId",
-      handler: "controller.namespaceFindNamespaceById",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.namespaceFindNamespaceById"
     },
     {
       method: "POST",
       path: "/api/projects/:projectId/namespaces",
-      handler: "controller.namespaceCreateNamespace",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.create"] }
-      }
+      handler: "controller.namespaceCreateNamespace"
     },
     {
       method: "PUT",
       path: "/api/projects/:projectId/namespaces/:namespaceId",
-      handler: "controller.namespaceUpdateNamespace",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.update"] }
-      }
+      handler: "controller.namespaceUpdateNamespace"
     },
     {
       method: "DELETE",
       path: "/api/projects/:projectId/namespaces/:namespaceId",
-      handler: "controller.namespaceDeleteNamespace",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.delete"] }
-      }
+      handler: "controller.namespaceDeleteNamespace"
     }
   ]
 };
@@ -975,47 +1025,27 @@ const project = {
     {
       method: "GET",
       path: "/api/projects",
-      handler: "controller.projectFindProjects",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.projectFindProjects"
     },
     {
       method: "POST",
       path: "/api/projects",
-      handler: "controller.projectCreateProject",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.create"] }
-      }
+      handler: "controller.projectCreateProject"
     },
     {
       method: "PUT",
       path: "/api/projects/:projectId",
-      handler: "controller.projectUpdateProject",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.update"] }
-      }
+      handler: "controller.projectUpdateProject"
     },
     {
       method: "DELETE",
       path: "/api/projects/:projectId",
-      handler: "controller.projectDeleteProject",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.delete"] }
-      }
+      handler: "controller.projectDeleteProject"
     },
     {
       method: "GET",
       path: "/api/projects/:projectId",
-      handler: "controller.projectFindProjectById",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.projectFindProjectById"
     }
   ]
 };
@@ -1024,20 +1054,17 @@ const setting = {
     {
       method: "GET",
       path: "/api/settings",
-      handler: "controller.settingsFind",
-      config: { auth: false, policies: [] }
+      handler: "controller.settingsFind"
     },
     {
       method: "GET",
       path: "/api/settings/api-key",
-      handler: "controller.settingsFindApiKey",
-      config: { auth: false, policies: [] }
+      handler: "controller.settingsFindApiKey"
     },
     {
       method: "POST",
       path: "/api/settings/api-key/regenerate",
-      handler: "controller.settingsRegenerateApiKey",
-      config: { auth: false, policies: [] }
+      handler: "controller.settingsRegenerateApiKey"
     }
   ]
 };
@@ -1046,65 +1073,37 @@ const translation$1 = {
     {
       method: "GET",
       path: "/api/projects/:projectId/translations",
-      handler: "controller.translationFindAllProjectTranslations",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.translationFindAllProjectTranslations"
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/translations/:translationId",
-      handler: "controller.translationFindTranslationById",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.translationFindTranslationById"
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations",
-      handler: "controller.translationFindTranslations",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.translationFindTranslations"
     },
     {
       method: "GET",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations/:translationId",
-      handler: "controller.translationFindTranslationById",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.read"] }
-      }
+      handler: "controller.translationFindTranslationById"
     },
     {
       method: "POST",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations",
-      handler: "controller.translationCreateTranslation",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.create"] }
-      }
+      handler: "controller.translationCreateTranslation"
     },
     {
       method: "PUT",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations/:translationId",
-      handler: "controller.translationUpdateTranslation",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.update"] }
-      }
+      handler: "controller.translationUpdateTranslation"
     },
     {
       method: "DELETE",
       path: "/api/projects/:projectId/namespaces/:namespaceId/translations/:translationId",
-      handler: "controller.translationDeleteTranslation",
-      config: {
-        policies: [],
-        auth: { scope: ["plugin::strapi-static-strings.delete"] }
-      }
+      handler: "controller.translationDeleteTranslation"
     }
   ]
 };

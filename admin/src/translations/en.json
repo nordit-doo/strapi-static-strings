@@ -1,1 +1,4 @@
-{}
+{
+  "global.plugins.strapi-static-strings.description": "Manage static translations for your Strapi application.",
+  "global.plugins.strapi-static-strings.name": "Strapi Static Strings"
+}

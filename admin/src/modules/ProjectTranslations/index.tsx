@@ -17,6 +17,8 @@ import {
 } from '@strapi/design-system';
 import { Pencil, Plus, Trash } from '@strapi/icons';
 
+import type { ChangeEvent } from 'react';
+
 import { TranslationCreateEditModal } from '../Translations/components/TranslationCreateEditModal';
 import { useHook } from './hook';
 import { Pagination } from '../../components/Pagination';
@@ -36,6 +38,7 @@ export const ProjectTranslations = () => {
     handleSearchChange,
     handleShowMissingTranslationsOnlyChange,
     handleToggleDeleteTranslation,
+    handleTranslationCreate,
     isPending,
     searchQuery,
     translations,
@@ -57,10 +60,31 @@ export const ProjectTranslations = () => {
   };
 
   const renderEmptyState = () => {
-    if (!isPending && !translations?.items.length) {
+    if (!isPending && !translations?.items) {
       return (
         <Box background="neutral100">
-          <EmptyStateLayout content="No translations found in this project." />
+          <EmptyStateLayout
+            content="You don't have any translations yet."
+            action={
+              <Button onClick={handleTranslationCreate} startIcon={<Plus />} variant="secondary">
+                Create your first translation
+              </Button>
+            }
+          />
+        </Box>
+      );
+    }
+    if (!isPending && !!translations?.items && !translations?.items.length) {
+      return (
+        <Box background="neutral100">
+          <EmptyStateLayout
+            content="There are no translations."
+            action={
+              <Button onClick={handleTranslationCreate} startIcon={<Plus />} variant="secondary">
+                Create translation
+              </Button>
+            }
+          />
         </Box>
       );
     }
@@ -74,20 +98,6 @@ export const ProjectTranslations = () => {
 
     return (
       <>
-        {!!translations?.items?.length && (
-          <>
-            <Flex marginBottom="1rem" gap="1rem">
-              <Switch
-                checked={showMissingTranslationsOnly}
-                name="showMissingTranslationsOnly"
-                onLabel="Show missing translations only"
-                offLabel="Show missing translations only"
-                onCheckedChange={handleShowMissingTranslationsOnlyChange}
-                visibleLabels
-              />
-            </Flex>
-          </>
-        )}
         <Box paddingTop="1rem" paddingBottom="1rem">
           <Table colCount={3} rowCount={translations?.items?.length || 0}>
             <Thead>
@@ -194,9 +204,19 @@ export const ProjectTranslations = () => {
           name="search"
           placeholder="Search by key or translation value..."
           value={searchQuery}
-          onChange={(e) => handleSearchChange(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => handleSearchChange(e.target.value)}
         />
       </Box>
+      <Flex marginBottom="1rem" gap="1rem">
+        <Switch
+          checked={showMissingTranslationsOnly}
+          name="showMissingTranslationsOnly"
+          onLabel="Show missing translations only"
+          offLabel="Show missing translations only"
+          onCheckedChange={handleShowMissingTranslationsOnlyChange}
+          visibleLabels
+        />
+      </Flex>
       {renderContent()}
       {renderEmptyState()}
       {renderLoader()}

@@ -1,18 +1,20 @@
 import { useImperativeHandle, useState } from 'react';
 
-import axios from 'axios';
+import { getFetchClient } from '@strapi/strapi/admin';
 
 import { PLUGIN_ID } from '../../../../pluginId';
 import { INamespace } from '../../../../../../types/Namespace';
+
+const { get, post, put, del } = getFetchClient();
 
 const createNamespace = async ({
   projectId,
   name,
   description,
 }: Partial<INamespace & { projectId: string }>) => {
-  return axios
-    .post(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces`, { name, description })
-    .then((res) => res.data);
+  return post(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces`, { name, description }).then(
+    (res) => res.data
+  );
 };
 
 const updateNamespace = async ({
@@ -21,13 +23,14 @@ const updateNamespace = async ({
   name,
   description,
 }: INamespace & { projectId: string }) => {
-  return axios
-    .put(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${id}`, { name, description })
-    .then((res) => res.data);
+  return put(`/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${id}`, {
+    name,
+    description,
+  }).then((res) => res.data);
 };
 
 const deleteNamespace = async (id: string) => {
-  return axios.delete(`/${PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
+  return del(`/${PLUGIN_ID}/api/projects/${id}/namespaces/${id}`).then((res) => res.data);
 };
 
 export const useHook = ({ projectId, ref, refetch }: any) => {

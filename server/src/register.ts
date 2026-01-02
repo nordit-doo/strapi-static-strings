@@ -1,30 +1,13 @@
 import type { Core } from '@strapi/strapi';
+import { PLUGIN_ID } from '../../admin/src/pluginId';
 
 const register = ({ strapi }: { strapi: Core.Strapi }) => {
   const actions = [
     {
       section: 'plugins',
-      displayName: 'Read',
-      uid: 'read',
-      pluginName: 'strapi-static-strings',
-    },
-    {
-      section: 'plugins',
-      displayName: 'Create',
-      uid: 'create',
-      pluginName: 'strapi-static-strings',
-    },
-    {
-      section: 'plugins',
-      displayName: 'Update',
-      uid: 'update',
-      pluginName: 'strapi-static-strings',
-    },
-    {
-      section: 'plugins',
-      displayName: 'Delete',
-      uid: 'delete',
-      pluginName: 'strapi-static-strings',
+      displayName: 'Access the plugin',
+      uid: 'main',
+      pluginName: PLUGIN_ID,
     },
   ];
 

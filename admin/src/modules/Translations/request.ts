@@ -1,7 +1,9 @@
-import axios from 'axios';
+import { getFetchClient } from '@strapi/strapi/admin';
 
 import { PLUGIN_ID } from '../../pluginId';
 import { ITranslationPayload } from '../../../../types/Translation';
+
+const { get, post, put, del } = getFetchClient();
 
 export const getTranslation = async ({
   namespaceId,
@@ -17,11 +19,9 @@ export const getTranslation = async ({
   search?: string;
 }) => {
   const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
-  return axios
-    .get(
-      `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
-    )
-    .then((res) => res.data);
+  return get(
+    `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
+  ).then((res) => res.data);
 };
 
 export const createTranslation = async ({
@@ -31,7 +31,7 @@ export const createTranslation = async ({
   translations,
 }: ITranslationPayload) => {
   try {
-    const response = await axios.post(
+    const response = await post(
       `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations`,
       {
         key,
@@ -53,7 +53,7 @@ export const updateTranslation = async ({
   translations,
 }: ITranslationPayload) => {
   try {
-    const response = await axios.put(
+    const response = await put(
       `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${id}`,
       {
         key,
@@ -77,7 +77,7 @@ export const deleteTranslation = async ({
   translationId: number;
 }) => {
   try {
-    const response = await axios.delete(
+    const response = await del(
       `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${translationId}`
     );
     return response.data;

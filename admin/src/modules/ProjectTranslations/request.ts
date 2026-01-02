@@ -1,6 +1,8 @@
-import axios from 'axios';
+import { getFetchClient } from '@strapi/strapi/admin';
 
 import { PLUGIN_ID } from '../../pluginId';
+
+const { get, del } = getFetchClient();
 
 export const getProjectTranslations = async ({
   page,
@@ -14,11 +16,9 @@ export const getProjectTranslations = async ({
   search?: string;
 }) => {
   const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
-  return axios
-    .get(
-      `/${PLUGIN_ID}/api/projects/${projectId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
-    )
-    .then((res) => res.data);
+  return get(
+    `/${PLUGIN_ID}/api/projects/${projectId}/translations?page=${page}&showMissingOnly=${showMissingOnly}${searchParam}`
+  ).then((res) => res.data);
 };
 
 export const deleteTranslation = async ({
@@ -29,8 +29,7 @@ export const deleteTranslation = async ({
   translationId: number;
 }) => {
   try {
-    // Find the translation first to get its namespace
-    const translation = await axios.get(
+    const translation = await get(
       `/${PLUGIN_ID}/api/projects/${projectId}/translations/${translationId}`
     );
     const namespaceId = translation.data.namespace?.id;
@@ -39,7 +38,7 @@ export const deleteTranslation = async ({
       throw new Error('Cannot find namespace for translation');
     }
 
-    const response = await axios.delete(
+    const response = await del(
       `/${PLUGIN_ID}/api/projects/${projectId}/namespaces/${namespaceId}/translations/${translationId}`
     );
     return response.data;

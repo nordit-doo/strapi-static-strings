@@ -1,22 +1,22 @@
 import { useImperativeHandle, useState } from 'react';
 
-import axios from 'axios';
+import { getFetchClient } from '@strapi/strapi/admin';
 
 import { IProject } from '../../../../../../types/Project';
 import { PLUGIN_ID } from '../../../../pluginId';
 
+const { post, put, del } = getFetchClient();
+
 const createProject = async ({ name, description }: Partial<IProject>) => {
-  return axios.post(`/${PLUGIN_ID}/api/projects`, { name, description }).then((res) => res.data);
+  return post(`/${PLUGIN_ID}/api/projects`, { name, description }).then((res) => res.data);
 };
 
 const updateProject = async ({ id, name, description }: Partial<IProject>) => {
-  return axios
-    .put(`/${PLUGIN_ID}/api/projects/${id}`, { name, description })
-    .then((res) => res.data);
+  return put(`/${PLUGIN_ID}/api/projects/${id}`, { name, description }).then((res) => res.data);
 };
 
 const deleteProject = async (id: string) => {
-  return axios.delete(`/${PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
+  return del(`/${PLUGIN_ID}/api/projects/${id}`).then((res) => res.data);
 };
 
 export const useHook = ({ ref, refetch }: any) => {

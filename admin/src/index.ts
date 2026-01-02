@@ -18,7 +18,7 @@ export default {
       },
       permissions: [
         {
-          action: 'plugin::strapi-static-strings.read',
+          action: `plugin::${PLUGIN_ID}.main`,
           subject: null,
         },
       ],

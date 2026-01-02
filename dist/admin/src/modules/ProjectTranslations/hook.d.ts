@@ -16,6 +16,7 @@ export declare const useHook: () => {
     handleSearchChange: (value: string) => void;
     handleShowMissingTranslationsOnlyChange: (value: boolean) => void;
     handleToggleDeleteTranslation: (translation?: ITranslation) => () => Promise<void>;
+    handleTranslationCreate: () => void;
     isPending: boolean;
     searchQuery: string;
     translations: {
